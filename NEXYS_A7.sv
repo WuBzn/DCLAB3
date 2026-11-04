@@ -111,7 +111,8 @@ module NEXYS_A7 #(
 
     logic BTNU_down,BTNR_down,BTND_down,locked,CLK200MHZ;
     logic audio_bit, recording, playing, paused, recorded, overflow;
-    logic[3:0] digit0,digit1,digit2,digit3,digit4,digit5,digit6,digit7;
+    logic [3:0] speed_select;
+    logic [3:0] digit0,digit1,digit2,digit3,digit4,digit5,digit6,digit7;
     
     clk_wiz_0 clk_wiz(
     .reset(BTNC),
@@ -126,6 +127,10 @@ module NEXYS_A7 #(
     // The board has the pull-up required by its open-drain audio input.
     assign AUD_PWM = audio_bit ? 1'bz : 1'b0;
     assign AUD_SD = 1'b1;
+    ff_sync #(.WIDTH(4)) speed_sync(
+        .clk(M_CLK), .rst_p(BTNC || !locked),
+        .in_async(SW[3:0]), .out(speed_select)
+    );
     
     
     Top #(.MAX_WORDS(MAX_WORDS)) top0(
@@ -137,6 +142,7 @@ module NEXYS_A7 #(
     .record_press(BTNU_down),
     .play_pause_press(BTNR_down),
     .stop_press(BTND_down),
+    .speed_select(speed_select),
     .recording(recording),
     .playing(playing),
     .paused(paused),
@@ -161,8 +167,8 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // LED0: recording, 1: playing, 2: paused, 3: recorded, 4: error.
-    assign LED = {11'b0, overflow, recorded, paused, playing, recording};
+    // LED[8:5] mirrors the speed switches; LED[4:0] shows recorder status.
+    assign LED = {7'b0, speed_select, overflow, recorded, paused, playing, recording};
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),

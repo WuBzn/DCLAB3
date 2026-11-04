@@ -27,6 +27,10 @@ module Top_vivado_tb;
     always #5_000 clk100 = ~clk100;
 
     NEXYS_A7 #(.DEBOUNCE_CYCLES(4), .MAX_WORDS(4)) dut (
+        .CLK100MHZ(clk100), .SW(16'b0), .LED(led),
+        .BTNC(btnc), .BTNU(btnu), .BTNR(btnr), .BTND(btnd),
+        .M_DATA(m_data), .M_LRSEL(m_lrsel),
+        .AUD_PWM(aud_pwm), .AUD_SD(aud_sd),
         .ddr2_ras_n(ddr2_ras_n), .ddr2_cas_n(ddr2_cas_n),
         .ddr2_we_n(ddr2_we_n), .ddr2_ck_p(ddr2_ck_p),
         .ddr2_ck_n(ddr2_ck_n), .ddr2_cke(ddr2_cke),
