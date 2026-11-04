@@ -1,57 +1,56 @@
 //The MIG is configured to operate with a 2:1 PHY-to-controller clock ratio,
 //which reduces the clock frequency required by the user logic. Although the
 //user interface transfers 64 bits per cycle in this mode, each DDR memory
-//transaction still spans 128 bits. As a result, every read or write operation
-//must be completed over two consecutive ui_clk cycles.
+//transaction still spans 128 bits, transferred as two 64-bit data beats.
 //
-//To keep the external interface simple, this module still exposes a 128-bit
-//data port. Since this example only uses the lower 64 bits, the upper half
-//is ignored during reads and masked during writes.
+//The external data port is 64 bits. The second 64-bit beat is ignored during
+//reads and masked during writes.
 //
 //Compared with the 4:1 configuration, the 2:1 mode provides a faster ui_clk,
 //which helps reduce the latency when transferring requests between the CPU
 //clock domain and the MIG user interface.
 module ddr2_interface(
-    input clk_mem,
-    input rst_n,
+    input           clk_mem,
+    input           rst_n,
 
-    inout[15:0] ddr2_dq,
-    inout[1:0] ddr2_dqs_n,
-    inout[1:0] ddr2_dqs_p,
-    output[12:0] ddr2_addr,
-    output[2:0] ddr2_ba,
-    output ddr2_ras_n,
-    output ddr2_cas_n,
-    output ddr2_we_n,
-    output[0:0] ddr2_ck_p,
-    output[0:0] ddr2_ck_n,
-    output[0:0] ddr2_cke,
-    output[0:0] ddr2_cs_n,
-    output[1:0] ddr2_dm,
-    output[0:0] ddr2_odt,
+    inout [15:0]    ddr2_dq,
+    inout [1 :0]    ddr2_dqs_n,
+    inout [1 :0]    ddr2_dqs_p,
+    output[12:0]    ddr2_addr,
+    output[2 :0]    ddr2_ba,
+    output          ddr2_ras_n,
+    output          ddr2_cas_n,
+    output          ddr2_we_n,
+    output[0:0]     ddr2_ck_p,
+    output[0:0]     ddr2_ck_n,
+    output[0:0]     ddr2_cke,
+    output[0:0]     ddr2_cs_n,
+    output[1:0]     ddr2_dm,
+    output[0:0]     ddr2_odt,
 
-    input cpu_clk,
-    input[23:0] addr,
-    input[63:0] data_in,
-    output [63:0] data_out,
-    input rstrobe,
-    input wstrobe,
-    output transaction_complete,
-    output ready
+    input           cpu_clk,
+    input [23:0]    addr,
+    input [63:0]    data_in,
+    output[63:0]    data_out,
+    input           rstrobe,
+    input           wstrobe,
+    output          transaction_complete,
+    output          ready
     );
 
     logic ui_clk, ui_clk_sync_rst;
 
-    logic[2:0] mem_cmd;
-    logic mem_en;
-    logic mem_rdy;
-    wire mem_rd_data_end, mem_rd_data_valid;
-    wire [63:0] mem_rd_data;
+    logic [2 :0] mem_cmd;
+    logic        mem_en;
+    logic        mem_rdy;
+    logic        calib_done;
+    wire         mem_rd_data_end, mem_rd_data_valid;
+    wire  [63:0] mem_rd_data;
     logic [63:0] mem_wdf_data;
-    logic mem_wdf_end;
-    logic mem_wdf_wren;
-    logic[7:0] mem_wdf_mask;
-    logic mem_wdf_rdy;
+    logic        mem_wdf_end;
+    logic        mem_wdf_wren;
+    logic [7 :0] mem_wdf_mask;
+    logic        mem_wdf_rdy;
 
     mig_7series_0 mig1 (
         .ddr2_addr(ddr2_addr),
@@ -65,7 +64,7 @@ module ddr2_interface(
         .ddr2_dq(ddr2_dq),
         .ddr2_dqs_n(ddr2_dqs_n),
         .ddr2_dqs_p(ddr2_dqs_p),
-        .init_calib_complete(),
+        .init_calib_complete(calib_done),
 
         .ddr2_cs_n(ddr2_cs_n),
         .ddr2_dm(ddr2_dm),
@@ -99,7 +98,7 @@ module ddr2_interface(
 
     //Addresses and data remain stable from the initial strobe till the end of
     //the transaction. It is only necessary to synchronize the strobes.
-    logic rstrobe_sync, wstrobe_sync;
+    logic rstrobe_sync, wstrobe_sync, complete_r;
 
     flag_sync rs_sync(
         .a_rst_n(rst_n),
@@ -131,44 +130,119 @@ module ddr2_interface(
     ff_sync ready_sync(
         .clk(cpu_clk),
         .rst_p(~rst_n),
-        .in_async(~ui_clk_sync_rst),
+        .in_async(calib_done && ~ui_clk_sync_rst),
         .out(ready)
         );
 
-    localparam STATE_IDLE = 3'h0;
-    localparam STATE_PREREAD = 3'h1;
-    localparam STATE_READ = 3'h2;
-    localparam STATE_WRITE = 3'h4;
+    localparam STATE_IDLE        = 3'h0;
+    localparam STATE_PREREAD     = 3'h1;
+    localparam STATE_READ        = 3'h2;
+    localparam STATE_WRITE       = 3'h4;
     localparam STATE_WRITEDATA_H = 3'h5;
     localparam STATE_WRITEDATA_L = 3'h6;
 
     //parameters for mem_cmd
-    localparam CMD_READ = 3'h1;
+    localparam CMD_READ  = 3'h1;
     localparam CMD_WRITE = 3'h0;
 
 
-    //TODO
-    
-    always @(posedge ui_clk) begin
-        if(ui_clk_sync_rst) begin
-            
+    logic [2:0]  state;
+    logic [63:0] read_data;
+    logic        read_first_seen;
+
+    assign data_out = read_data;
+
+    always_comb begin
+        mem_cmd      = CMD_READ;
+        mem_en       = 1'b0;
+        mem_wdf_data = data_in;
+        mem_wdf_wren = 1'b0;
+        mem_wdf_end  = 1'b0;
+        mem_wdf_mask = 8'h00;
+
+        case (state)
+            STATE_PREREAD: begin
+                mem_en = 1'b1;
+            end
+            STATE_WRITE: begin
+                mem_cmd = CMD_WRITE;
+                mem_en  = 1'b1;
+            end
+            STATE_WRITEDATA_H: begin
+                mem_wdf_wren = 1'b1;
+            end
+            STATE_WRITEDATA_L: begin
+                mem_wdf_wren = 1'b1;
+                mem_wdf_end  = 1'b1;
+                mem_wdf_mask = 8'hff;
+            end
+            default: ;
+        endcase
+    end
+
+    always_ff @(posedge ui_clk) begin
+        if (ui_clk_sync_rst) begin
+            state           <= STATE_IDLE;
+            read_data       <= '0;
+            read_first_seen <= 1'b0;
+            complete_r      <= 1'b0;
         end else begin
-            
+            complete_r <= 1'b0;
+            case (state)
+                STATE_IDLE: begin
+                    if (wstrobe_sync)
+                        state <= STATE_WRITEDATA_H;
+                    else if (rstrobe_sync) begin
+                        read_first_seen <= 1'b0;
+                        state           <= STATE_PREREAD;
+                    end
+                end
+                STATE_WRITEDATA_H: begin
+                    if (mem_wdf_rdy)
+                        state <= STATE_WRITEDATA_L;
+                end
+                STATE_WRITEDATA_L: begin
+                    if (mem_wdf_rdy)
+                        state <= STATE_WRITE;
+                end
+                STATE_WRITE: begin
+                    if (mem_rdy) begin
+                        complete_r <= 1'b1;
+                        state      <= STATE_IDLE;
+                    end
+                end
+                STATE_PREREAD, STATE_READ: begin
+                    if (state == STATE_PREREAD && mem_rdy)
+                        state <= STATE_READ;
+                    if (mem_rd_data_valid) begin
+                        if (!read_first_seen) begin
+                            read_data       <= mem_rd_data;
+                            read_first_seen <= 1'b1;
+                        end
+                        if (mem_rd_data_end) begin
+                            complete_r <= 1'b1;
+                            state      <= STATE_IDLE;
+                        end
+                    end
+                end
+                default: state <= STATE_IDLE;
+            endcase
         end
     end
 endmodule
 
 module ff_sync #(parameter WIDTH=1)(
-    input clk,
-    input rst_p,
-    input[WIDTH-1:0] in_async,
-    output reg[WIDTH-1:0] out);
+    input                   clk,
+    input                   rst_p,
+    input     [WIDTH-1:0]   in_async,
+    output reg[WIDTH-1:0]   out
+    );
     
     (* ASYNC_REG = "TRUE" *) reg[WIDTH-1:0] sync_reg;
     always @(posedge clk, posedge rst_p) begin
         if(rst_p) begin
             sync_reg <= 0;
-            out <= 0;
+            out      <= 0;
         end else begin
             {out, sync_reg} <= {sync_reg, in_async};
         end
@@ -177,11 +251,11 @@ module ff_sync #(parameter WIDTH=1)(
 endmodule
 
 module flag_sync(
-    input a_rst_n,
-    input a_clk,
-    input a_flag,
-    input b_rst_n,
-    input b_clk,
+    input  a_rst_n,
+    input  a_clk,
+    input  a_flag,
+    input  b_rst_n,
+    input  b_clk,
     output b_flag
     );
 

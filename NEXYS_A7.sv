@@ -1,4 +1,7 @@
-module NEXYS_A7(
+module NEXYS_A7 #(
+    parameter int DEBOUNCE_CYCLES = 31_250,
+    parameter int MAX_WORDS = 781_250
+)(
     //Clock signal
     input CLK100MHZ,
     //Switches
@@ -107,6 +110,7 @@ module NEXYS_A7(
     );
 
     logic BTNU_down,BTNR_down,BTND_down,locked,CLK200MHZ;
+    logic audio_bit, recording, playing, paused, recorded, overflow;
     logic[3:0] digit0,digit1,digit2,digit3,digit4,digit5,digit6,digit7;
     
     clk_wiz_0 clk_wiz(
@@ -116,14 +120,28 @@ module NEXYS_A7(
     .clk_out5(M_CLK),
     .locked(locked)
     );
+
+    // The microphone updates data on M_CLK's falling edge; Top samples rising.
+    assign M_LRSEL = 1'b1;
+    // The board has the pull-up required by its open-drain audio input.
+    assign AUD_PWM = audio_bit ? 1'bz : 1'b0;
+    assign AUD_SD = 1'b1;
     
     
-    Top(
+    Top #(.MAX_WORDS(MAX_WORDS)) top0(
     .clk(M_CLK),
     .locked(locked),
     .rst(BTNC),
     .data_in(M_DATA),
-    .data_out(AUD_PWM),
+    .data_out(audio_bit),
+    .record_press(BTNU_down),
+    .play_pause_press(BTNR_down),
+    .stop_press(BTND_down),
+    .recording(recording),
+    .playing(playing),
+    .paused(paused),
+    .recorded(recorded),
+    .overflow(overflow),
 
     //ddr2 Interface
     .ddr2_addr(ddr2_addr),
@@ -140,8 +158,11 @@ module NEXYS_A7(
     .ddr2_cs_n(ddr2_cs_n),
     .ddr2_dm(ddr2_dm),
     .ddr2_odt(ddr2_odt),
-    .clk_mem(CLK200MHZ),
+    .clk_mem(CLK200MHZ)
     );
+
+    // LED0: recording, 1: playing, 2: paused, 3: recorded, 4: error.
+    assign LED = {11'b0, overflow, recorded, paused, playing, recording};
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),
@@ -163,21 +184,21 @@ module NEXYS_A7(
         .CG(CG),
         .o_an(AN)
     );
-    Debounce deb0(
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES)) deb0(
         .i_in(BTNU),
         .i_clk(M_CLK),
         .i_rst(BTNC),
         .o_pos(BTNU_down)
     );
     
-    Debounce deb1(
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES)) deb1(
         .i_in(BTNR),
         .i_clk(M_CLK),
         .i_rst(BTNC),
         .o_pos(BTNR_down)
     );
     
-    Debounce deb2(
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES)) deb2(
         .i_in(BTND),
         .i_clk(M_CLK),
         .i_rst(BTNC),
