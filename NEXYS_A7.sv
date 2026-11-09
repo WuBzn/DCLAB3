@@ -112,7 +112,7 @@ module NEXYS_A7 #(
     logic BTNU_down,BTNR_down,BTND_down,locked,CLK200MHZ;
     logic audio_bit, recording, playing, paused, recorded, overflow;
     logic [3:0] speed_select;
-    logic [3:0] digit0,digit1,digit2,digit3,digit4,digit5,digit6,digit7;
+    logic [4:0] display_seconds;
     
     clk_wiz_0 clk_wiz(
     .reset(BTNC),
@@ -148,6 +148,7 @@ module NEXYS_A7 #(
     .paused(paused),
     .recorded(recorded),
     .overflow(overflow),
+    .display_seconds(display_seconds),
 
     //ddr2 Interface
     .ddr2_addr(ddr2_addr),
@@ -172,15 +173,14 @@ module NEXYS_A7 #(
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),
-        .i_rst(BTNC),
-        .i_digit0(digit0),
-        .i_digit1(digit1),
-        .i_digit2(digit2),
-        .i_digit3(digit3),
-        .i_digit4(digit4),
-        .i_digit5(digit5),
-        .i_digit6(digit6),
-        .i_digit7(digit7),
+        .i_rst(BTNC || !locked),
+        .i_recording(recording),
+        .i_playing(playing),
+        .i_paused(paused),
+        .i_recorded(recorded),
+        .i_overflow(overflow),
+        .i_seconds(display_seconds),
+        .i_speed(speed_select),
         .CA(CA),
         .CB(CB),
         .CC(CC),
@@ -188,6 +188,7 @@ module NEXYS_A7 #(
         .CE(CE),
         .CF(CF),
         .CG(CG),
+        .DP(DP),
         .o_an(AN)
     );
     Debounce #(.CNT_N(DEBOUNCE_CYCLES)) deb0(

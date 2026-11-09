@@ -5,6 +5,7 @@ module Top_speed_tb;
     logic data_in = 0, record_press = 0, play_pause_press = 0, stop_press = 0;
     logic [3:0] speed_select = 0;
     wire data_out, recording, playing, paused, recorded, overflow;
+    wire [4:0] display_seconds;
     logic [63:0] words [0:3];
     logic expected [0:2047];
     integer expected_len, sampled, case_number;
@@ -12,13 +13,15 @@ module Top_speed_tb;
 
     always #5 clk = ~clk;
 
-    Top #(.MAX_WORDS(4)) dut (
+    // A short display second keeps time-boundary checks fast in simulation.
+    Top #(.MAX_WORDS(4), .AUDIO_BITS_PER_SECOND(64)) dut (
         .clk(clk), .clk_mem(clk), .locked(locked), .rst(rst),
         .data_in(data_in), .record_press(record_press),
         .play_pause_press(play_pause_press), .stop_press(stop_press),
         .speed_select(speed_select), .data_out(data_out),
         .recording(recording), .playing(playing), .paused(paused),
-        .recorded(recorded), .overflow(overflow)
+        .recorded(recorded), .overflow(overflow),
+        .display_seconds(display_seconds)
     );
 
     // The microphone changes data on the falling edge of its 3.125 MHz clock.
@@ -88,9 +91,11 @@ module Top_speed_tb;
             wait (playing);
             wait (!playing);
             checking = 0;
-            if (sampled != expected_len || overflow || !recorded)
-                $fatal(1, "speed=%0d samples=%0d expected=%0d overflow=%b",
-                       code, sampled, expected_len, overflow);
+            if (sampled != expected_len || overflow || !recorded ||
+                dut.play_seconds != 4 || display_seconds != 4)
+                $fatal(1, "speed=%0d samples=%0d expected=%0d play_s=%0d display_s=%0d overflow=%b",
+                       code, sampled, expected_len, dut.play_seconds,
+                       display_seconds, overflow);
             repeat (3) @(negedge clk);
         end
     endtask
@@ -105,7 +110,8 @@ module Top_speed_tb;
         rst = 0;
         pulse_record();
         wait (recorded && !recording);
-        if (mic_bit != 256 || dut.recorded_words != 4 || overflow)
+        if (mic_bit != 256 || dut.recorded_words != 4 ||
+            display_seconds != 4 || overflow)
             $fatal(1, "Recording setup failed");
         for (mode_code = 0; mode_code < 16; mode_code = mode_code + 1)
             run_case(mode_code);
@@ -116,18 +122,21 @@ module Top_speed_tb;
         make_expected(11);
         checking = 1;
         pulse_play();
-        wait (sampled >= 41);
+        wait (sampled >= 301);
         pulse_play();
         if (!paused) $fatal(1, "Pause was not entered");
+        if (display_seconds != 1)
+            $fatal(1, "Paused at wrong source second: %0d", display_seconds);
         held_bit = dut.play_bit;
         held_repeat = dut.repeat_count;
         repeat (12) @(negedge clk);
-        if (dut.play_bit != held_bit || dut.repeat_count != held_repeat)
+        if (dut.play_bit != held_bit || dut.repeat_count != held_repeat ||
+            display_seconds != 1)
             $fatal(1, "Playback advanced while paused");
         pulse_play();
         wait (!playing);
         checking = 0;
-        if (sampled != expected_len || overflow)
+        if (sampled != expected_len || overflow || dut.play_seconds != 4)
             $fatal(1, "Pause/resume failed: samples=%0d expected=%0d",
                    sampled, expected_len);
 

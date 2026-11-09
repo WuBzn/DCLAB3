@@ -1,5 +1,6 @@
 module Top #(
-    parameter int MAX_WORDS = 781_250  // 16 seconds at 3.125 MHz, 64 bits/word
+    parameter int MAX_WORDS = 781_250, // 16 seconds at 3.125 MHz, 64 bits/word
+    parameter int AUDIO_BITS_PER_SECOND = 3_125_000
 )(
     input  clk,
     input  locked,
@@ -15,6 +16,7 @@ module Top #(
     output paused,
     output recorded,
     output logic overflow,
+    output logic [4:0] display_seconds,
 
     inout  [15:0] ddr2_dq,
     inout  [1 :0] ddr2_dqs_n,
@@ -33,6 +35,7 @@ module Top #(
     input         clk_mem
 );
     localparam int COUNT_BITS = $clog2(MAX_WORDS + 1);
+    localparam logic [22:0] SECOND_BITS = AUDIO_BITS_PER_SECOND;
     wire reset_n = locked && !rst;
 
     logic [23:0] mem_addr;
@@ -86,6 +89,10 @@ module Top #(
     logic [7:0] bit_end;
     logic group_ready, final_word, speed_changed, output_bit;
     logic play_loaded;
+    logic [21:0] record_subsecond, play_subsecond;
+    logic [4:0] record_seconds, play_seconds;
+    logic [7:0] consumed_bits;
+    logic [22:0] play_bits_total;
     integer bit_index;
 
     // SW[3] selects slow playback; SW[2:0] selects 1x through 8x.
@@ -97,6 +104,10 @@ module Top #(
     assign bit_end = {1'b0, play_bit} + {4'b0, group_size};
     assign group_ready = play_bit < 7'd64 &&
                          (bit_end <= 8'd64 || final_word || next_valid);
+    assign consumed_bits = final_word && bit_end > 8'd64 ?
+                           8'd64 - {1'b0, play_bit} : {4'b0, group_size};
+    assign play_bits_total = {1'b0, play_subsecond} +
+                             {15'b0, consumed_bits};
 
     // For fast playback, each output bit consumes n input bits. Keep the
     // leftover one-count across groups (including 64-bit word boundaries).
@@ -126,6 +137,8 @@ module Top #(
     assign playing   = mode == PLAY;
     assign paused    = mode == PAUSE;
     assign recorded  = recorded_words != 0 && !recording;
+    assign display_seconds = mode == PLAY || mode == PAUSE || mode == PREFILL ?
+                             play_seconds : record_seconds;
     // 50% PDM density while idle/paused keeps the audio input centered.
     assign data_out = playing && group_ready ? output_bit : silence_bit;
 
@@ -157,6 +170,10 @@ module Top #(
             read_addr <= 0;
             silence_bit <= 0;
             overflow <= 0;
+            record_subsecond <= 0;
+            play_subsecond <= 0;
+            record_seconds <= 0;
+            play_seconds <= 0;
         end else begin
             mem_wstrobe <= 0;
             mem_rstrobe <= 0;
@@ -224,6 +241,8 @@ module Top #(
                         write_addr <= 0;
                         overflow <= 0;
                         next_valid <= 0;
+                        record_subsecond <= 0;
+                        record_seconds <= 0;
                     end else if (mode == READY && play_pause_press &&
                                  mem_state == MEM_IDLE && recorded_words != 0) begin
                         mode <= PREFILL;
@@ -235,11 +254,19 @@ module Top #(
                         play_loaded <= 0;
                         repeat_count <= 0;
                         ones_accum <= 0;
+                        play_subsecond <= 0;
+                        play_seconds <= 0;
                     end
                 end
                 RECORD: begin
                     capture_shift <= {capture_shift[62:0], data_in};
                     capture_bit <= capture_bit + 1'b1;
+                    if ({1'b0, record_subsecond} == SECOND_BITS - 23'd1) begin
+                        record_subsecond <= 0;
+                        record_seconds <= record_seconds + 1'b1;
+                    end else begin
+                        record_subsecond <= record_subsecond + 1'b1;
+                    end
                     if (record_press || stop_press)
                         stop_requested <= 1;
 
@@ -285,6 +312,12 @@ module Top #(
                                 repeat_count <= (speed_changed ? 4'd0 : repeat_count) + 1'b1;
                             end else begin
                                 repeat_count <= 0;
+                                if (play_bits_total >= SECOND_BITS) begin
+                                    play_subsecond <= play_bits_total - SECOND_BITS;
+                                    play_seconds <= play_seconds + 1'b1;
+                                end else begin
+                                    play_subsecond <= play_bits_total[21:0];
+                                end
                                 if (!speed_select[3] && speed_factor != 4'd1)
                                     ones_accum <= density_sum >= {1'b0, speed_factor} ?
                                                   density_sum - {1'b0, speed_factor} : density_sum;
