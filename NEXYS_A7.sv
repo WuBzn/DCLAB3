@@ -110,7 +110,8 @@ module NEXYS_A7 #(
     );
 
     logic BTNU_down,BTNR_down,BTND_down,locked,CLK200MHZ;
-    logic audio_bit, recording, playing, paused, recorded, overflow;
+    logic audio_bit, raw_audio_bit, robot_enable;
+    logic recording, playing, paused, recorded, overflow;
     logic [3:0] speed_select;
     logic [4:0] display_seconds;
     
@@ -131,6 +132,16 @@ module NEXYS_A7 #(
         .clk(M_CLK), .rst_p(BTNC || !locked),
         .in_async(SW[3:0]), .out(speed_select)
     );
+    ff_sync #(.WIDTH(1)) robot_sync(
+        .clk(M_CLK), .rst_p(BTNC || !locked),
+        .in_async(SW[4]), .out(robot_enable)
+    );
+
+    RobotVoice robot_voice(
+        .clk(M_CLK), .rst(BTNC || !locked),
+        .in_pdm(raw_audio_bit), .enable(robot_enable),
+        .out_pdm(audio_bit)
+    );
     
     
     Top #(.MAX_WORDS(MAX_WORDS)) top0(
@@ -138,7 +149,7 @@ module NEXYS_A7 #(
     .locked(locked),
     .rst(BTNC),
     .data_in(M_DATA),
-    .data_out(audio_bit),
+    .data_out(raw_audio_bit),
     .record_press(BTNU_down),
     .play_pause_press(BTNR_down),
     .stop_press(BTND_down),
@@ -168,8 +179,10 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // LED[8:5] mirrors the speed switches; LED[4:0] shows recorder status.
-    assign LED = {7'b0, speed_select, overflow, recorded, paused, playing, recording};
+    // LED9 shows the robot effect; LED[8:5] mirrors the speed switches.
+    // LED[4:0] shows recorder status.
+    assign LED = {6'b0, robot_enable, speed_select,
+                  overflow, recorded, paused, playing, recording};
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),

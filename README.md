@@ -2,14 +2,15 @@
 
 Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DDR2，並由音訊輸出播放。此專案目前支援正常播放、暫停、停止、2～8 倍快放，以及 1/2～1/8 倍慢放。
 
-## 目前進度（2026-11-09）
+## 目前進度（2026-11-10）
 
 - 錄音、DDR2 儲存與正常播放已完成。音訊時鐘為 3.125 MHz，錄音上限為 16 秒（`MAX_WORDS = 781_250` 個 64-bit 字）。
 - 快放每個輸出週期消耗 `n` 個原始 PDM 位元，使用累加器維持輸出 `1` 的密度；慢放把每個原始位元重複 `n` 次。播放位置可跨越 64-bit 字邊界，播放中可切換倍率。
 - 已加入播放前預讀，以及下一個 64-bit 字的緩衝。暫停會保留播放進度，停止後可從頭重播。
 - 使用者已在實體板上做初步測試，回報目前看起來功能正常；各倍率的實測播放時間與長時間穩定性尚未記錄。
 - `bonus` 分支已加入八位七段顯示器：狀態、原錄音位置秒數及播放倍率。顯示器 RTL 與模擬已完成；新版 bitstream 已產生，板測仍待進行。
-- Vivado 2026.1 已於 2026-11-09 重新完成綜合、布局繞線與 bitstream 產生。新版輸出位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.runs\impl_1\NEXYS_A7.bit`；舊版備份為 `C:\Temp\NEXYS_A7_pre_bonus.bit`。RTL 原始檔位於本資料夾，Vivado 專案位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.xpr`。
+- `autotune` 分支新增機器人聲播放模式：`SW[4]` 切換原音／約 100 Hz 方波環形調變，`LED9` 指示效果啟用。錄音仍以原始 PDM 寫入 DDR2；播放時才進行音訊處理。此效果改變音色，不是音高偵測或音階修正。
+- Vivado 2026.1 已於 2026-11-10 完成機器人聲版本的綜合、布局繞線及 bitstream。輸出位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.runs\impl_1\NEXYS_A7.bit`；前一版備份為 `C:\Temp\NEXYS_A7_pre_robot.bit`。RTL 原始檔位於本資料夾，Vivado 專案位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.xpr`。
 
 ## 板上操作
 
@@ -19,7 +20,8 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | `BTNU` | 開始錄音；錄音時再按一次，於目前 64-bit 字收滿後停止 |
 | `BTNR` | 從頭播放；播放中按下為暫停，暫停中按下為繼續 |
 | `BTND` | 停止錄音或播放 |
-| `SW[3:0]` | 選擇播放速度；SW4～SW15 未用於速度控制 |
+| `SW[3:0]` | 選擇播放速度 |
+| `SW[4]` | 0：原音；1：機器人聲 |
 
 速度設定：`SW[2:0] + 1` 是倍率數字 `n`。`SW[3]=0` 時為 `n×`，`SW[3]=1` 時為 `1/n×`。兩種方向的 `n=1` 都是正常速度。
 
@@ -29,7 +31,17 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | `0001`～`0111` | 2×～8× |
 | `1001`～`1111` | 1/2×～1/8× |
 
-`LED[8:5]` 顯示同步後的四位速度設定。`LED0` 為錄音中、`LED1` 為播放中、`LED2` 為暫停、`LED3` 為已有錄音、`LED4` 為錄音溢位或播放資料供應不足。`LED4` 會保持亮起，直到重設或開始新錄音。
+`LED[8:5]` 顯示同步後的四位速度設定，`LED9` 表示機器人聲已啟用。`LED0` 為錄音中、`LED1` 為播放中、`LED2` 為暫停、`LED3` 為已有錄音、`LED4` 為錄音溢位或播放資料供應不足。`LED4` 會保持亮起，直到重設或開始新錄音。
+
+## 機器人聲（bonus）
+
+`RobotVoice.sv` 在播放輸出端加入獨立效果路徑，不更動 `Top.sv` 的錄音資料與 DDR2 控制：
+
+1. 以三級 CIC 濾波器將 3.125 MHz PDM 每 64 位元轉成一筆約 48.8 kHz 的 signed PCM。
+2. 用約 100 Hz 的方波將 PCM 交替變成 `x` 與 `-x`，產生金屬感的人聲；輸出取負時對 signed 16-bit 最小值做飽和處理。
+3. 以一階 1-bit 脈衝密度調變器轉回 3.125 MHz PDM，再送到板上的開汲極音訊輸出。`SW[4]=0` 時直接輸出原始 PDM 位元。
+
+切換效果時可能聽到短促的切換聲；音色與音量仍需以實體板和耳機確認。現有變速播放的語速與音高會一起改變，機器人聲模式則在其後額外處理音色。
 
 ## 七段顯示器（bonus）
 
@@ -55,10 +67,14 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | `ddr2_interface.sv` | Top 與 MIG 之間的 DDR2 交易及跨時鐘域同步 |
 | `Debounce.sv` | 按鍵同步、去彈跳與按下脈波 |
 | `Seven_Segment_Display.sv` | 八位七段顯示器的狀態排版、字型與掃描 |
+| `RobotVoice.sv` | 播放 PDM 降採樣、機器人聲調變與 1-bit 音訊輸出 |
 | `Nexys-A7-100T-Master.xdc`、`mig.ucf` | 板上腳位與 DDR2 相關約束 |
 | `sim/Top_speed_tb.sv` | 使用交易級 DDR2 模型驗證錄音及所有速度模式 |
 | `sim/Seven_Segment_Display_tb.sv` | 驗證八位掃描、狀態、秒數及速度字型 |
+| `sim/RobotVoice_tb.sv` | 驗證原音旁路、正負滿刻度、環形調變與輸出密度 |
 | `sim/Top_vivado_tb.sv` | 使用 Vivado IP 與 DDR2 模型的整合測試平台 |
+| `sim/setup_robot_voice_vivado.tcl` | 將機器人聲 RTL 加入既有 Vivado 專案 |
+| `sim/build_robot_voice_vivado.tcl` | 重新執行綜合、實作並產生 bitstream |
 
 ## 已做的驗證
 
@@ -76,6 +92,15 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
   vvp "$env:TEMP\Seven_Segment_Display_tb.vvp"
   ```
 
+- `sim/RobotVoice_tb.sv` 已通過原音位元旁路、CIC 正負滿刻度與靜音、方波正負交替和輸出 PDM 密度檢查：
+
+  ```powershell
+  iverilog -g2012 -s RobotVoice_tb -o "$env:TEMP\RobotVoice_tb.vvp" RobotVoice.sv sim/RobotVoice_tb.sv
+  vvp "$env:TEMP\RobotVoice_tb.vvp"
+  ```
+
+- 2026-11-10 的 Vivado 路由後時序報告：WNS `+0.662 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；寫入 bitstream 前 DRC 為 `0 errors`。機器人聲 bitstream 尚未上板聽測。既有的時鐘方法學警告仍存在，正餘裕只代表目前約束下的結果。
+
 - 2026-11-09 的新版 routed timing report 顯示 WNS `+0.682 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；bitstream 前 DRC 為 `0 errors`。時鐘方法學警告仍如後述，正餘裕只代表目前約束下的結果。
 
 - 2026-11-04 的 routed timing report 顯示 WNS `+0.589 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；路由完成，bitstream 前的 DRC 為 `0 errors`。
@@ -86,5 +111,5 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 1. **時鐘約束需整理。** `Nexys-A7-100T-Master.xdc` 第 9 行與 Clock Wizard 產生的 XDC 對同一個 100 MHz 輸入建立兩個 primary clocks。Methodology report 有 44 筆 `TIMING-6` critical warnings 及 21 筆 `TIMING-56`。應保留一個正確的時鐘定義後重新檢查時序；目前的正餘裕只代表現有約束下的結果。
 2. **非同步重設網路需檢查。** `LUTAR-1` 指出 LUT 驅動非同步 reset，可能有毛刺風險；若板上偶發自行重置，優先檢查 `Top.sv` 的 `locked && !rst` 及相關重設路徑。
 3. **DDR2 時鐘警告需留意。** `REQP-1709` 指出 MIG PLL 輸出使用不同類型的 clock buffer，可能影響相位對齊。以板上 DDR2 校準、錄音及讀回穩定性作為後續驗證重點；不要直接修改產生的 IP 檔案。
-4. 新版 bitstream 已包含七段顯示器 bonus，尚需燒錄到板上驗證字型順序、亮度與錄放秒數。`PLIO-3` 主要來自未使用外設的部分腳位約束；`CFGBVS-1` 表示尚未指定配置電壓屬性。
+4. 新版 bitstream 已包含七段顯示器與機器人聲 bonus，尚需燒錄到板上驗證字型順序、亮度、錄放秒數，以及 `SW[4]` 原音／效果切換與音質。`PLIO-3` 主要來自未使用外設的部分腳位約束；`CFGBVS-1` 表示尚未指定配置電壓屬性。
 5. 記錄完整的板測結果：同一段錄音的 1× 時間為 `T` 時，確認各檔快放約為 `T/n`、慢放約為 `nT`，並確認長時間播放時 `LED4` 不亮。
