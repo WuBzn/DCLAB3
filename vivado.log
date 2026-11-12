@@ -1,0 +1,1499 @@
+INFO: [Common 17-3922] A valid Vivado Design Suite BASIC license has been detected. Your current license is active and will expire on 24-jul-2027.
+#-----------------------------------------------------------
+# Vivado v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Thu Nov 12 23:56:01 2026
+# Process ID         : 18752
+# Current directory  : C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3
+# Command line       : vivado.exe -mode batch -source build_volume_led.tcl
+# Log file           : C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/vivado.log
+# Journal file       : C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3\vivado.jou
+# Running On         : Bensons-laptop
+# Platform           : Windows 11
+# Operating System   : 26200
+# Processor Detail   : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+# CPU Frequency      : 2803 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16861 MB
+# Swap memory        : 5905 MB
+# Total Virtual      : 22766 MB
+# Available Virtual  : 9205 MB
+#-----------------------------------------------------------
+source build_volume_led.tcl
+# set project_file C:/DCLAB3_vivado/DCLAB3/DCLAB3.xpr
+# set meter_file [file normalize [file join [file dirname [info script]] Pdm_Volume_Meter.sv]]
+# foreach path [list $project_file $meter_file] {
+#     if {![file exists $path]} { error "Missing required file: $path" }
+# }
+# open_project $project_file
+Scanning sources...
+Finished scanning sources
+WARNING: [Project 1-5713] Board part '' set for the project  is not found. BoardPart property will be unset. Please select board from latest repo build 
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/AMDDesignTools/2026.1/Vivado/data/ip'.
+open_project: Time (s): cpu = 00:00:14 ; elapsed = 00:00:10 . Memory (MB): peak = 649.191 ; gain = 324.707
+# if {[llength [get_files -quiet $meter_file]] == 0} {
+#     add_files -fileset sources_1 -norecurse $meter_file
+# }
+# set_property top NEXYS_A7 [get_filesets sources_1]
+# update_compile_order -fileset sources_1
+# reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1
+
+# launch_runs synth_1 -jobs 4
+[Thu Nov 12 23:56:16 2026] Launched synth_1...
+Run output will be captured here: C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/runme.log
+# wait_on_run synth_1
+[Thu Nov 12 23:56:16 2026] Waiting for synth_1 to finish...
+
+*** Running vivado
+    with args -log NEXYS_A7.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source NEXYS_A7.tcl
+
+
+INFO: [Common 17-3922] A valid Vivado Design Suite BASIC license has been detected. Your current license is active and will expire on 24-jul-2027.
+#-----------------------------------------------------------
+# Vivado v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Thu Nov 12 23:56:18 2026
+# Process ID         : 16768
+# Current directory  : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1
+# Command line       : vivado.exe -log NEXYS_A7.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source NEXYS_A7.tcl
+# Log file           : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/NEXYS_A7.vds
+# Journal file       : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1\vivado.jou
+# Running On         : Bensons-laptop
+# Platform           : Windows 11
+# Operating System   : 26200
+# Processor Detail   : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+# CPU Frequency      : 2803 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16861 MB
+# Swap memory        : 5905 MB
+# Total Virtual      : 22766 MB
+# Available Virtual  : 8492 MB
+#-----------------------------------------------------------
+
+****** Vivado v2026.1 (64-bit)
+  **** SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+  **** IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+  **** SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+  **** Start of session at: Thu Nov 12 23:56:18 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source NEXYS_A7.tcl -notrace
+create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:07 . Memory (MB): peak = 592.887 ; gain = 267.344
+Command: synth_design -top NEXYS_A7 -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Vivado_Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Designutils 20-5008] Incremental synthesis strategy default
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 10764
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 1422.680 ; gain = 576.965
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'NEXYS_A7' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/clk_wiz_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (0#1) [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/clk_wiz_0_stub.v:6]
+WARNING: [Synth 8-7071] port 'clk_out2' of module 'clk_wiz_0' is unconnected for instance 'clk_wiz' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+WARNING: [Synth 8-7071] port 'clk_out3' of module 'clk_wiz_0' is unconnected for instance 'clk_wiz' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+WARNING: [Synth 8-7071] port 'clk_out4' of module 'clk_wiz_0' is unconnected for instance 'clk_wiz' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+WARNING: [Synth 8-7071] port 'clk_out6' of module 'clk_wiz_0' is unconnected for instance 'clk_wiz' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+WARNING: [Synth 8-7071] port 'clk_out7' of module 'clk_wiz_0' is unconnected for instance 'clk_wiz' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+WARNING: [Synth 8-7023] instance 'clk_wiz' of module 'clk_wiz_0' has 10 connections declared, but only 5 given [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:119]
+INFO: [Synth 8-6157] synthesizing module 'ff_sync' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:234]
+	Parameter WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ff_sync' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:234]
+INFO: [Synth 8-6157] synthesizing module 'Top' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Top.sv:1]
+	Parameter MAX_WORDS bound to: 32'sb00000000000010111110101111000010 
+INFO: [Synth 8-6157] synthesizing module 'ddr2_interface' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'mig_7series_0' [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/mig_7series_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'mig_7series_0' (0#1) [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/mig_7series_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'flag_sync' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:253]
+INFO: [Synth 8-6155] done synthesizing module 'flag_sync' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:253]
+INFO: [Synth 8-6157] synthesizing module 'ff_sync__parameterized0' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:234]
+INFO: [Synth 8-6155] done synthesizing module 'ff_sync__parameterized0' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:234]
+INFO: [Synth 8-6155] done synthesizing module 'ddr2_interface' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/ddr2_interface.sv:12]
+INFO: [Synth 8-6155] done synthesizing module 'Top' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Top.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'Pdm_Volume_Meter' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Pdm_Volume_Meter.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'Pdm_Volume_Meter' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Pdm_Volume_Meter.sv:4]
+WARNING: [Synth 8-4446] all outputs are unconnected for this instance and logic may be removed [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:185]
+INFO: [Synth 8-6157] synthesizing module 'ila_0' [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/ila_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'ila_0' (0#1) [C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/.Xil/Vivado-16768-Bensons-laptop/realtime/ila_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'Seven_Segment_Display' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Seven_Segment_Display.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'Seven_Segment_Display' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Seven_Segment_Display.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'Debounce' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Debounce.sv:1]
+	Parameter CNT_N bound to: 32'sb00000000000000000111101000010010 
+INFO: [Synth 8-6155] done synthesizing module 'Debounce' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Debounce.sv:1]
+WARNING: [Synth 8-7071] port 'o_debounced' of module 'Debounce' is unconnected for instance 'deb0' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:214]
+WARNING: [Synth 8-7071] port 'o_neg' of module 'Debounce' is unconnected for instance 'deb0' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:214]
+WARNING: [Synth 8-7023] instance 'deb0' of module 'Debounce' has 6 connections declared, but only 4 given [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:214]
+WARNING: [Synth 8-7071] port 'o_debounced' of module 'Debounce' is unconnected for instance 'deb1' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:221]
+WARNING: [Synth 8-7071] port 'o_neg' of module 'Debounce' is unconnected for instance 'deb1' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:221]
+WARNING: [Synth 8-7023] instance 'deb1' of module 'Debounce' has 6 connections declared, but only 4 given [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:221]
+WARNING: [Synth 8-7071] port 'o_debounced' of module 'Debounce' is unconnected for instance 'deb2' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:228]
+WARNING: [Synth 8-7071] port 'o_neg' of module 'Debounce' is unconnected for instance 'deb2' [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:228]
+WARNING: [Synth 8-7023] instance 'deb2' of module 'Debounce' has 6 connections declared, but only 4 given [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:228]
+INFO: [Synth 8-6155] done synthesizing module 'NEXYS_A7' (0#1) [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:1]
+INFO: [Synth 8-6071] Mark debug on the nets applies keep_hierarchy on instance 'volume_meter0'. This will prevent further optimization [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:174]
+INFO: [Synth 8-6071] Mark debug on the nets applies keep_hierarchy on instance 'ila_volume0'. This will prevent further optimization [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:185]
+WARNING: [Synth 8-3848] Net LED16_B in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:12]
+WARNING: [Synth 8-3848] Net LED16_G in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:13]
+WARNING: [Synth 8-3848] Net LED16_R in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:14]
+WARNING: [Synth 8-3848] Net LED17_B in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:15]
+WARNING: [Synth 8-3848] Net LED17_G in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:16]
+WARNING: [Synth 8-3848] Net LED17_R in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:17]
+WARNING: [Synth 8-3848] Net VGA_R in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:44]
+WARNING: [Synth 8-3848] Net VGA_G in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:45]
+WARNING: [Synth 8-3848] Net VGA_B in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:46]
+WARNING: [Synth 8-3848] Net VGA_HS in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:47]
+WARNING: [Synth 8-3848] Net VGA_VS in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:48]
+WARNING: [Synth 8-3848] Net SD_RESET in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:50]
+WARNING: [Synth 8-3848] Net ACL_MOSI in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:57]
+WARNING: [Synth 8-3848] Net ACL_SCLK in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:58]
+WARNING: [Synth 8-3848] Net ACL_CSN in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:59]
+WARNING: [Synth 8-3848] Net TMP_SCL in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:62]
+WARNING: [Synth 8-3848] Net UART_RXD_OUT in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:75]
+WARNING: [Synth 8-3848] Net UART_CTS in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:76]
+WARNING: [Synth 8-3848] Net ETH_MDC in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:82]
+WARNING: [Synth 8-3848] Net ETH_RSTN in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:84]
+WARNING: [Synth 8-3848] Net ETH_TXEN in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:88]
+WARNING: [Synth 8-3848] Net ETH_TXD in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:89]
+WARNING: [Synth 8-3848] Net QSPI_CSN in module/entity NEXYS_A7 does not have driver. [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/NEXYS_A7.sv:94]
+WARNING: [Synth 8-3917] design NEXYS_A7 has port M_LRSEL driven by constant 1
+WARNING: [Synth 8-3917] design NEXYS_A7 has port AUD_SD driven by constant 1
+WARNING: [Synth 8-7129] Port LED16_B in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port LED16_G in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port LED16_R in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port LED17_B in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port LED17_G in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port LED17_R in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_R[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_R[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_R[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_R[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_G[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_G[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_G[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_G[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_B[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_B[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_B[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_B[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_HS in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port VGA_VS in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_RESET in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ACL_MOSI in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ACL_SCLK in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ACL_CSN in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port TMP_SCL in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port UART_RXD_OUT in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port UART_CTS in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_MDC in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_RSTN in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_TXEN in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_TXD[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_TXD[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port QSPI_CSN in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[10] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[9] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[8] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[7] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[6] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[5] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JA[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[10] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[9] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[8] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[7] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[6] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[5] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JB[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[10] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[9] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[8] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[7] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[6] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[5] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JC[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[10] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[9] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[8] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[7] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[6] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[5] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port JD[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_N[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_N[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_N[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_N[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_N[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_P[4] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_P[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_P[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_P[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port XA_P[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_SCK in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_CMD in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_DAT[3] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_DAT[2] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_DAT[1] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port SD_DAT[0] in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port TMP_SDA in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PS2_CLK in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port PS2_DATA in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_MDIO in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_CRSDV in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_RXERR in module NEXYS_A7 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port ETH_RXD[1] in module NEXYS_A7 is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1559.277 ; gain = 713.562
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1559.277 ; gain = 713.562
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1559.277 ; gain = 713.562
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.026 . Memory (MB): peak = 1559.277 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/mig_7series_0/mig_7series_0/mig_7series_0_in_context.xdc] for cell 'top0/ddr2_interface0/mig1'
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/mig_7series_0/mig_7series_0/mig_7series_0_in_context.xdc] for cell 'top0/ddr2_interface0/mig1'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk_wiz'
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'clk_wiz'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_0/ila_0_in_context.xdc] for cell 'ila_volume0'
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_0/ila_0_in_context.xdc] for cell 'ila_volume0'
+Parsing XDC File [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Nexys-A7-100T-Master.xdc]
+Finished Parsing XDC File [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Nexys-A7-100T-Master.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Nexys-A7-100T-Master.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/NEXYS_A7_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/NEXYS_A7_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1610.105 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.052 . Memory (MB): peak = 1611.676 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:26 ; elapsed = 00:00:27 . Memory (MB): peak = 1611.676 ; gain = 765.961
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:26 ; elapsed = 00:00:27 . Memory (MB): peak = 1611.676 ; gain = 765.961
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:26 ; elapsed = 00:00:27 . Memory (MB): peak = 1611.676 ; gain = 765.961
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'ddr2_interface'
+INFO: [Synth 8-802] inferred FSM for state register 'mode_reg' in module 'Top'
+INFO: [Synth 8-802] inferred FSM for state register 'mem_state_reg' in module 'Top'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              STATE_IDLE |                           000001 |                              000
+       STATE_WRITEDATA_H |                           000010 |                              101
+       STATE_WRITEDATA_L |                           000100 |                              110
+             STATE_WRITE |                           001000 |                              100
+           STATE_PREREAD |                           010000 |                              001
+              STATE_READ |                           100000 |                              010
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'ddr2_interface'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                MEM_IDLE |                               00 |                               00
+              WRITE_WAIT |                               10 |                               01
+               READ_WAIT |                               01 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'mem_state_reg' using encoding 'sequential' in module 'Top'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                   EMPTY |                              000 |                              000
+                    PLAY |                              011 |                              101
+                   PAUSE |                              001 |                              110
+                   READY |                              010 |                              011
+                  RECORD |                              110 |                              001
+                   DRAIN |                              101 |                              010
+                 PREFILL |                              100 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'mode_reg' using encoding 'sequential' in module 'Top'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:28 ; elapsed = 00:00:29 . Memory (MB): peak = 1611.676 ; gain = 765.961
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   4 Input   32 Bit       Adders := 1     
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   24 Bit       Adders := 2     
+	   2 Input   23 Bit       Adders := 1     
+	   2 Input   22 Bit       Adders := 2     
+	   2 Input   20 Bit       Adders := 4     
+	   2 Input   15 Bit       Adders := 3     
+	   3 Input   10 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 1     
+	   2 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 9     
+	   2 Input    7 Bit       Adders := 3     
+	   2 Input    6 Bit       Adders := 2     
+	   2 Input    5 Bit       Adders := 4     
+	   2 Input    4 Bit       Adders := 3     
+	   3 Input    4 Bit       Adders := 1     
+	   7 Input    4 Bit       Adders := 1     
+	   8 Input    4 Bit       Adders := 1     
+	   2 Input    3 Bit       Adders := 1     
++---XORs : 
+	   2 Input      1 Bit         XORs := 6     
++---Registers : 
+	               64 Bit    Registers := 6     
+	               32 Bit    Registers := 1     
+	               24 Bit    Registers := 3     
+	               22 Bit    Registers := 2     
+	               20 Bit    Registers := 3     
+	               15 Bit    Registers := 3     
+	               10 Bit    Registers := 1     
+	                7 Bit    Registers := 2     
+	                6 Bit    Registers := 2     
+	                5 Bit    Registers := 2     
+	                4 Bit    Registers := 5     
+	                3 Bit    Registers := 4     
+	                1 Bit    Registers := 30    
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 6     
+	   6 Input   64 Bit        Muxes := 3     
+	   2 Input   32 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 4     
+	   6 Input   24 Bit        Muxes := 2     
+	   2 Input   22 Bit        Muxes := 1     
+	   6 Input   22 Bit        Muxes := 2     
+	   2 Input   20 Bit        Muxes := 2     
+	   6 Input   20 Bit        Muxes := 3     
+	   2 Input   15 Bit        Muxes := 3     
+	   2 Input    8 Bit        Muxes := 2     
+	   2 Input    7 Bit        Muxes := 4     
+	   6 Input    7 Bit        Muxes := 1     
+	   5 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 4     
+	   6 Input    6 Bit        Muxes := 1     
+	   6 Input    5 Bit        Muxes := 2     
+	   2 Input    5 Bit        Muxes := 8     
+	   5 Input    5 Bit        Muxes := 2     
+	   3 Input    5 Bit        Muxes := 2     
+	   2 Input    4 Bit        Muxes := 18    
+	   6 Input    4 Bit        Muxes := 2     
+	   4 Input    4 Bit        Muxes := 1     
+	  24 Input    3 Bit        Muxes := 1     
+	   3 Input    2 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 59    
+	   5 Input    1 Bit        Muxes := 8     
+	   3 Input    1 Bit        Muxes := 12    
+	   6 Input    1 Bit        Muxes := 22    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3917] design NEXYS_A7 has port DP driven by constant 1
+WARNING: [Synth 8-3917] design NEXYS_A7 has port M_LRSEL driven by constant 1
+WARNING: [Synth 8-3917] design NEXYS_A7 has port AUD_SD driven by constant 1
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:49 ; elapsed = 00:00:51 . Memory (MB): peak = 1747.754 ; gain = 902.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+ROM: Preliminary Mapping Report
++----------------------+-----------------+---------------+----------------+
+|Module Name           | RTL Object      | Depth x Width | Implemented As | 
++----------------------+-----------------+---------------+----------------+
+|Seven_Segment_Display | segments        | 32x7          | LUT            | 
+|NEXYS_A7              | seven0/segments | 32x7          | LUT            | 
++----------------------+-----------------+---------------+----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:57 ; elapsed = 00:00:59 . Memory (MB): peak = 1795.266 ; gain = 949.551
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:06 ; elapsed = 00:01:09 . Memory (MB): peak = 1897.898 ; gain = 1052.184
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:07 ; elapsed = 00:01:10 . Memory (MB): peak = 1897.961 ; gain = 1052.246
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |clk_wiz_0     |         1|
+|2     |ila_0         |         1|
+|3     |mig_7series_0 |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+------------+------+
+|      |Cell        |Count |
++------+------------+------+
+|1     |clk_wiz     |     1|
+|2     |ila         |     1|
+|3     |mig_7series |     1|
+|4     |CARRY4      |   121|
+|5     |LUT1        |    55|
+|6     |LUT2        |   454|
+|7     |LUT3        |   239|
+|8     |LUT4        |   181|
+|9     |LUT5        |   145|
+|10    |LUT6        |   391|
+|11    |MUXF7       |    37|
+|12    |MUXF8       |    15|
+|13    |FDCE        |   713|
+|14    |FDRE        |    71|
+|15    |FDSE        |     1|
+|16    |IBUF        |     9|
+|17    |OBUF        |    35|
+|18    |OBUFT       |    34|
++------+------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 133 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:00 ; elapsed = 00:01:13 . Memory (MB): peak = 2092.289 ; gain = 1194.176
+Synthesis Optimization Complete : Time (s): cpu = 00:01:15 ; elapsed = 00:01:17 . Memory (MB): peak = 2092.289 ; gain = 1246.574
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.032 . Memory (MB): peak = 2103.512 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 173 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2107.141 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 103f7a0b
+INFO: [Common 17-83] Releasing license: Vivado_Synthesis
+49 Infos, 144 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:21 ; elapsed = 00:01:35 . Memory (MB): peak = 2107.148 ; gain = 1457.602
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 2107.148 ; gain = 0.000
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when serializing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+INFO: [Common 17-1381] The checkpoint 'C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/synth_1/NEXYS_A7.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file NEXYS_A7_utilization_synth.rpt -pb NEXYS_A7_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Thu Nov 12 23:58:07 2026...
+[Thu Nov 12 23:58:12 2026] synth_1 finished
+wait_on_runs: Time (s): cpu = 00:00:01 ; elapsed = 00:01:56 . Memory (MB): peak = 660.570 ; gain = 0.000
+# set synth_status [get_property STATUS [get_runs synth_1]]
+# if {[string first "Complete!" $synth_status] < 0} {
+#     error "Synthesis failed: $synth_status"
+# }
+# launch_runs impl_1 -to_step write_bitstream -jobs 4
+[Thu Nov 12 23:58:12 2026] Launched impl_1...
+Run output will be captured here: C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/runme.log
+# wait_on_run impl_1
+[Thu Nov 12 23:58:12 2026] Waiting for impl_1 to finish...
+
+*** Running vivado
+    with args -log NEXYS_A7.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source NEXYS_A7.tcl -notrace
+
+
+INFO: [Common 17-3922] A valid Vivado Design Suite BASIC license has been detected. Your current license is active and will expire on 24-jul-2027.
+#-----------------------------------------------------------
+# Vivado v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Thu Nov 12 23:58:19 2026
+# Process ID         : 15000
+# Current directory  : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1
+# Command line       : vivado.exe -log NEXYS_A7.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source NEXYS_A7.tcl -notrace
+# Log file           : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7.vdi
+# Journal file       : C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1\vivado.jou
+# Running On         : Bensons-laptop
+# Platform           : Windows 11
+# Operating System   : 26200
+# Processor Detail   : 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+# CPU Frequency      : 2803 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16861 MB
+# Swap memory        : 5905 MB
+# Total Virtual      : 22766 MB
+# Available Virtual  : 8555 MB
+#-----------------------------------------------------------
+
+****** Vivado v2026.1 (64-bit)
+  **** SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+  **** IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+  **** SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+  **** Start of session at: Thu Nov 12 23:58:19 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source NEXYS_A7.tcl -notrace
+create_project: Time (s): cpu = 00:00:17 ; elapsed = 00:00:11 . Memory (MB): peak = 591.441 ; gain = 265.789
+Command: link_design -top NEXYS_A7 -part xc7a100tcsg324-1
+Design is defaulting to srcset: sources_1
+Design is defaulting to constrset: constrs_1
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-5699] Read binary netlist with skipMacroContent - 1
+INFO: [Project 1-454] Reading design checkpoint 'c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.dcp' for cell 'clk_wiz'
+INFO: [Project 1-454] Reading design checkpoint 'c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_0.dcp' for cell 'ila_volume0'
+INFO: [Project 1-454] Reading design checkpoint 'c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/mig_7series_0/mig_7series_0.dcp' for cell 'top0/ddr2_interface0/mig1'
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.049 . Memory (MB): peak = 890.016 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 457 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2026.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Chipscope 16-324] Core: ila_volume0 UUID: 179d3b8e-d179-53eb-a4b3-087964563a5d 
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/mig_7series_0/mig_7series_0/user_design/constraints/mig_7series_0.xdc] for cell 'top0/ddr2_interface0/mig1'
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/mig_7series_0/mig_7series_0/user_design/constraints/mig_7series_0.xdc] for cell 'top0/ddr2_interface0/mig1'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc] for cell 'clk_wiz/inst'
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc] for cell 'clk_wiz/inst'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc] for cell 'clk_wiz/inst'
+INFO: [Timing 38-35] Done setting XDC timing constraints. [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc:54]
+INFO: [Timing 38-2] Deriving generated clocks [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc:54]
+get_clocks: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 1624.453 ; gain = 568.402
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc] for cell 'clk_wiz/inst'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila_impl.xdc] for cell 'ila_volume0/inst'
+WARNING: [Vivado_Tcl 4-921] Waiver ID 'CDC-10' -to list should not be empty. [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila_impl.xdc:31]
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila_impl.xdc] for cell 'ila_volume0/inst'
+Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila.xdc] for cell 'ila_volume0/inst'
+WARNING: [Vivado_Tcl 4-921] Waiver ID 'CDC-10' -to list should not be empty. [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila.xdc:108]
+Finished Parsing XDC File [c:/DCLAB3_vivado/DCLAB3/DCLAB3.gen/sources_1/ip/ila_0/ila_v6_2/constraints/ila.xdc] for cell 'ila_volume0/inst'
+Parsing XDC File [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Nexys-A7-100T-Master.xdc]
+Finished Parsing XDC File [C:/Users/ben88/OneDrive/桌面/數電實驗/Lab3/Nexys-A7-100T-Master.xdc]
+[libprotobuf ERROR C:\protobuf-3.21.12\protobuf\src\google\protobuf\wire_format_lite.cc:618] String field 'HDMetricDBGroup.MetricMapEntry.value' contains invalid UTF-8 data when parsing a protocol buffer. Use the 'bytes' type if you intend to send raw bytes. 
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-1687] 2 scoped IP constraints or related sub-commands were skipped due to synthesis logic optimizations usually triggered by constant connectivity or unconnected output pins. To review the skipped constraints and messages, run the command 'set_param netlist.IPMsgFiltering false' before opening the design.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1624.453 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 123 instances were transformed.
+  CFGLUT5 => CFGLUT5 (SRL16E, SRLC32E): 44 instances
+  IBUFDS_INTERMDISABLE => IBUFDS_INTERMDISABLE (IBUFDS_INTERMDISABLE_INT(x2)): 2 instances
+  IOBUFDS_INTERMDISABLE => IOBUFDS_INTERMDISABLE (IBUFDS_INTERMDISABLE_INT(x2), INV, OBUFTDS(x2)): 2 instances
+  IOBUF_INTERMDISABLE => IOBUF_INTERMDISABLE (IBUF_INTERMDISABLE, OBUFT): 16 instances
+  OBUFDS => OBUFDS_DUAL_BUF (INV, OBUFDS(x2)): 1 instance 
+  OBUFTDS => OBUFTDS_DUAL_BUF (INV, OBUFTDS(x2)): 2 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 54 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances
+
+15 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+link_design completed successfully
+link_design: Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1624.453 ; gain = 974.027
+Command: opt_design
+Attempting to get a license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.784 . Memory (MB): peak = 1624.453 ; gain = 0.000
+
+Starting Cache Timing Information Task
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-2] Deriving generated clocks
+Ending Cache Timing Information Task | Checksum: 14d14a572
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.645 . Memory (MB): peak = 1651.605 ; gain = 27.152
+
+Starting Logic Optimization Task
+
+Phase 1 Initialization
+
+Phase 1.1 Core Generation And Design Setup
+
+Phase 1.1.1 Generate And Synthesize Debug Cores
+INFO: [Chipscope 16-329] Generating Script for core instance : dbg_hub 
+INFO: [IP_Flow 19-3806] Processing IP xilinx.com:ip:xsdbm:3.0 for cell dbg_hub_CV.
+INFO: [Chipscope 16-469] Using cached IP synthesis design for IP xilinx.com:ip:xsdbm:3.0, cache-ID = cbfe310e01d4a870.
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 1.1.1 Generate And Synthesize Debug Cores | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Phase 1.1 Core Generation And Design Setup | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 1.2 Setup Constraints And Sort Netlist
+Phase 1.2 Setup Constraints And Sort Netlist | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Phase 1 Initialization | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 2 Timer Update And Timing Data Collection
+
+Phase 2.1 Detect if minReqCache needed
+Phase 2.1 Detect if minReqCache needed | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 2.2 Timer Update
+Phase 2.2 Timer Update | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 2.3 Timing Data Collection
+Phase 2.3 Timing Data Collection | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Phase 2 Timer Update And Timing Data Collection | Checksum: 1878762b1
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 3 Retarget
+INFO: [Opt 31-1851] Number of loadless carry chains removed were: 0
+INFO: [Opt 31-1834] Total Chains To Be Transformed Were: 0 AND Number of Transformed insts Created are: 0
+INFO: [Opt 31-1566] Pulled 8 inverters resulting in an inversion of 67 pins
+INFO: [Opt 31-138] Pushed 8 inverter(s) to 12 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 3 Retarget | Checksum: 2af17901b
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Retarget | Checksum: 2af17901b
+INFO: [Opt 31-389] Phase Retarget created 12 cells and removed 68 cells
+INFO: [Opt 31-1021] In phase Retarget, 85 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 4 Constant propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Phase 4 Constant propagation | Checksum: 1e48d9ca5
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Constant propagation | Checksum: 1e48d9ca5
+INFO: [Opt 31-389] Phase Constant propagation created 21 cells and removed 77 cells
+INFO: [Opt 31-1021] In phase Constant propagation, 47 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 5 Sweep
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 5 Sweep | Checksum: 23a50a490
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Sweep | Checksum: 23a50a490
+INFO: [Opt 31-389] Phase Sweep created 4 cells and removed 158 cells
+INFO: [Opt 31-1021] In phase Sweep, 889 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 6 BUFG optimization
+Phase 6 BUFG optimization | Checksum: 23a50a490
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+BUFG optimization | Checksum: 23a50a490
+INFO: [Opt 31-662] Phase BUFG optimization created 0 cells of which 0 are BUFGs and removed 0 cells.
+
+Phase 7 Shift Register Optimization
+INFO: [Opt 31-1064] SRL Remap converted 0 SRLs to 0 registers and converted 0 registers of register chains to 0 SRLs
+Phase 7 Shift Register Optimization | Checksum: 23a50a490
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Shift Register Optimization | Checksum: 23a50a490
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Phase 8 Post Processing Netlist
+INFO: [Opt 31-1566] Pulled 1 inverters resulting in an inversion of 5 pins
+Phase 8 Post Processing Netlist | Checksum: 1f14b6787
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Post Processing Netlist | Checksum: 1f14b6787
+INFO: [Opt 31-389] Phase Post Processing Netlist created 0 cells and removed 1 cells
+INFO: [Opt 31-1021] In phase Post Processing Netlist, 58 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 9 Finalization
+
+Phase 9.1 Finalizing Design Cores and Updating Shapes
+Phase 9.1 Finalizing Design Cores and Updating Shapes | Checksum: 1f6bfb67d
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Phase 9.2 Verifying Netlist Connectivity
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.025 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 9.2 Verifying Netlist Connectivity | Checksum: 1f6bfb67d
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Phase 9 Finalization | Checksum: 1f6bfb67d
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+Opt_design Change Summary
+=========================
+
+
+-------------------------------------------------------------------------------------------------------------------------
+|  Phase                        |  #Cells created  |  #Cells Removed  |  #Constrained objects preventing optimizations  |
+-------------------------------------------------------------------------------------------------------------------------
+|  Retarget                     |              12  |              68  |                                             85  |
+|  Constant propagation         |              21  |              77  |                                             47  |
+|  Sweep                        |               4  |             158  |                                            889  |
+|  BUFG optimization            |               0  |               0  |                                              0  |
+|  Shift Register Optimization  |               0  |               0  |                                              0  |
+|  Post Processing Netlist      |               0  |               1  |                                             58  |
+-------------------------------------------------------------------------------------------------------------------------
+
+
+Ending Logic Optimization Task | Checksum: 1f6bfb67d
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 19.871
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+INFO: [Pwropt 34-9] Applying IDT optimizations ...
+INFO: [Pwropt 34-10] Applying ODC optimizations ...
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+
+
+Starting PowerOpt Patch Enables Task
+INFO: [Pwropt 34-162] WRITE_MODE attribute of 0 BRAM(s) out of a total of 1 has been updated to save power. Run report_power_opt to get a complete listing of the BRAMs updated.
+INFO: [Pwropt 34-201] Structural ODC has moved 0 WE to EN ports
+Number of BRAM Ports augmented: 1 newly gated: 0 Total Ports: 2
+Ending PowerOpt Patch Enables Task | Checksum: 1cc2788b0
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.052 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Ending Power Optimization Task | Checksum: 1cc2788b0
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Starting Final Cleanup Task
+Ending Final Cleanup Task | Checksum: 1cc2788b0
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Common 17-83] Releasing license: Vivado_Implementation
+55 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+opt_design: Time (s): cpu = 00:00:14 ; elapsed = 00:00:28 . Memory (MB): peak = 2191.480 ; gain = 567.027
+INFO: [Vivado 12-24828] Executing command : report_drc -file NEXYS_A7_drc_opted.rpt -pb NEXYS_A7_drc_opted.pb -rpx NEXYS_A7_drc_opted.rpx
+Command: report_drc -file NEXYS_A7_drc_opted.rpt -pb NEXYS_A7_drc_opted.pb -rpx NEXYS_A7_drc_opted.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_drc_opted.rpt.
+report_drc completed successfully
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.026 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.016 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.061 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_opt.dcp' has been generated.
+INFO: [Chipscope 16-240] Debug cores have already been implemented
+Command: place_design
+Attempting to get a license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-83] Releasing license: Vivado_Implementation
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 2 CPUs
+
+Starting Placer Task
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: 1c6dc4815
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.020 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus ACL_INT are not locked:  'ACL_INT[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus JA are not locked:  'JA[6]'  'JA[5]'  'JA[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus JB are not locked:  'JB[6]'  'JB[5]'  'JB[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus JC are not locked:  'JC[6]'  'JC[5]'  'JC[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus JD are not locked:  'JD[6]'  'JD[5]'  'JD[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus XA_N are not locked:  'XA_N[0]' 
+WARNING: [Place 30-87] Partially locked IO Bus is found. Following components of the IO Bus XA_P are not locked:  'XA_P[0]' 
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: 16129c794
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 1.3 Build Placer Netlist Model
+Phase 1.3 Build Placer Netlist Model | Checksum: 1cdc8d276
+
+Time (s): cpu = 00:00:06 ; elapsed = 00:00:04 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 1.4 Constrain Clocks/Macros
+Phase 1.4 Constrain Clocks/Macros | Checksum: 1cdc8d276
+
+Time (s): cpu = 00:00:06 ; elapsed = 00:00:04 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 1 Placer Initialization | Checksum: 1cdc8d276
+
+Time (s): cpu = 00:00:06 ; elapsed = 00:00:04 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2 Global Placement
+
+Phase 2.1 Floorplanning
+Phase 2.1 Floorplanning | Checksum: 25131e808
+
+Time (s): cpu = 00:00:08 ; elapsed = 00:00:05 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.2 Update Timing before SLR Path Opt
+Phase 2.2 Update Timing before SLR Path Opt | Checksum: 21170ee9b
+
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.3 Post-Processing in Floorplanning
+Phase 2.3 Post-Processing in Floorplanning | Checksum: 21170ee9b
+
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.4 Global Place Phase1
+Phase 2.4 Global Place Phase1 | Checksum: 19558c3cd
+
+Time (s): cpu = 00:00:31 ; elapsed = 00:00:18 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.5 Global Place Phase2
+
+Phase 2.5.1 UpdateTiming Before Physical Synthesis
+Phase 2.5.1 UpdateTiming Before Physical Synthesis | Checksum: 1be7a5830
+
+Time (s): cpu = 00:00:33 ; elapsed = 00:00:19 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.5.2 Physical Synthesis In Placer
+INFO: [Physopt 32-1035] Found 0 LUTNM shape to break, 429 LUT instances to create LUTNM shape
+INFO: [Physopt 32-1044] Break lutnm for timing: one critical 0, two critical 0, total 0, new lutff created 0
+INFO: [Physopt 32-1138] End 1 Pass. Optimized 199 nets or LUTs. Breaked 0 LUT, combined 199 existing LUTs and moved 0 existing LUT
+INFO: [Physopt 32-65] No nets found for high-fanout optimization.
+INFO: [Physopt 32-232] Optimized 0 net. Created 0 new instance.
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-670] No setup violation found.  DSP Register Optimization was not performed.
+INFO: [Physopt 32-670] No setup violation found.  Shift Register to Pipeline Optimization was not performed.
+INFO: [Physopt 32-670] No setup violation found.  Shift Register Optimization was not performed.
+INFO: [Physopt 32-670] No setup violation found.  BRAM Register Optimization was not performed.
+INFO: [Physopt 32-670] No setup violation found.  URAM Register Optimization was not performed.
+INFO: [Physopt 32-949] No candidate nets found for dynamic/static region interface net replication
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Summary of Physical Synthesis Optimizations
+============================================
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Optimization                                     |  Added Cells  |  Removed Cells  |  Optimized Cells/Nets  |  Dont Touch  |  Iterations  |  Elapsed   |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  LUT Combining                                    |            0  |            199  |                   199  |           0  |           1  |  00:00:00  |
+|  Retime                                           |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Very High Fanout                                 |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  DSP Register                                     |            0  |              0  |                     0  |           0  |           0  |  00:00:00  |
+|  Shift Register to Pipeline                       |            0  |              0  |                     0  |           0  |           0  |  00:00:00  |
+|  Shift Register                                   |            0  |              0  |                     0  |           0  |           0  |  00:00:00  |
+|  BRAM Register                                    |            0  |              0  |                     0  |           0  |           0  |  00:00:00  |
+|  URAM Register                                    |            0  |              0  |                     0  |           0  |           0  |  00:00:00  |
+|  Dynamic/Static Region Interface Net Replication  |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Total                                            |            0  |            199  |                   199  |           0  |           4  |  00:00:00  |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Phase 2.5.2 Physical Synthesis In Placer | Checksum: 1f74b0f4b
+
+Time (s): cpu = 00:00:35 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 2.5 Global Place Phase2 | Checksum: 1921fa348
+
+Time (s): cpu = 00:00:35 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 2 Global Placement | Checksum: 1921fa348
+
+Time (s): cpu = 00:00:35 ; elapsed = 00:00:20 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3 Detail Placement
+
+Phase 3.1 Commit Multi Column Macros
+Phase 3.1 Commit Multi Column Macros | Checksum: 12157fb48
+
+Time (s): cpu = 00:00:37 ; elapsed = 00:00:21 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.2 Commit Most Macros & LUTRAMs
+Phase 3.2 Commit Most Macros & LUTRAMs | Checksum: 232a00d35
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:23 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.3 Area Swap Optimization
+Phase 3.3 Area Swap Optimization | Checksum: 21b12bc9e
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:23 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.4 Pipeline Register Optimization
+Phase 3.4 Pipeline Register Optimization | Checksum: 1aa9a1457
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:23 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.5 Small Shape Detail Placement
+Phase 3.5 Small Shape Detail Placement | Checksum: 25ad4245f
+
+Time (s): cpu = 00:00:43 ; elapsed = 00:00:26 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.6 Re-assign LUT pins
+Phase 3.6 Re-assign LUT pins | Checksum: 27bcf15b3
+
+Time (s): cpu = 00:00:43 ; elapsed = 00:00:27 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3.7 Pipeline Register Optimization
+Phase 3.7 Pipeline Register Optimization | Checksum: 2baa0be25
+
+Time (s): cpu = 00:00:43 ; elapsed = 00:00:27 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 3 Detail Placement | Checksum: 2baa0be25
+
+Time (s): cpu = 00:00:44 ; elapsed = 00:00:27 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4 Post Placement Optimization and Clean-Up
+
+Phase 4.1 Post Commit Optimization
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 4.1.1 Post Placement Optimization
+Post Placement Optimization Initialization | Checksum: 289547f9f
+
+Phase 4.1.1.1 BUFG Insertion
+
+Starting Physical Synthesis Task
+
+Phase 1 Physical Synthesis Initialization
+INFO: [Physopt 32-721] Multithreading enabled for phys_opt_design using a maximum of 2 CPUs
+INFO: [Physopt 32-619] Estimated Timing Summary | WNS=0.257 | TNS=0.000 |
+Phase 1 Physical Synthesis Initialization | Checksum: 1c5384577
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.456 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Place 46-56] BUFG insertion identified 0 candidate nets. Inserted BUFG: 0, Replicated BUFG Driver: 0, Skipped due to Placement/Routing Conflicts: 0, Skipped due to Timing Degradation: 0, Skipped due to netlist editing failed: 0.
+Ending Physical Synthesis Task | Checksum: 2d9c60db4
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.491 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 4.1.1.1 BUFG Insertion | Checksum: 289547f9f
+
+Time (s): cpu = 00:00:49 ; elapsed = 00:00:30 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4.1.1.2 Post Placement Timing Optimization
+INFO: [Place 30-746] Post Placement Timing Summary WNS=0.646. For the most accurate timing information please run report_timing.
+Phase 4.1.1.2 Post Placement Timing Optimization | Checksum: 1e9bf164f
+
+Time (s): cpu = 00:00:50 ; elapsed = 00:00:31 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Time (s): cpu = 00:00:50 ; elapsed = 00:00:31 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 4.1 Post Commit Optimization | Checksum: 1e9bf164f
+
+Time (s): cpu = 00:00:50 ; elapsed = 00:00:31 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4.2 Post Placement Cleanup
+Phase 4.2 Post Placement Cleanup | Checksum: 1e9bf164f
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:31 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4.3 Placer Reporting
+
+Phase 4.3.1 Print Estimated Congestion
+INFO: [Place 30-612] Post-Placement Estimated Congestion 
+ ____________________________________________________
+|           | Global Congestion | Short Congestion  |
+| Direction | Region Size       | Region Size       |
+|___________|___________________|___________________|
+|      North|                1x1|                1x1|
+|___________|___________________|___________________|
+|      South|                1x1|                1x1|
+|___________|___________________|___________________|
+|       East|                1x1|                1x1|
+|___________|___________________|___________________|
+|       West|                1x1|                1x1|
+|___________|___________________|___________________|
+
+Phase 4.3.1 Print Estimated Congestion | Checksum: 1e9bf164f
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:32 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 4.3 Placer Reporting | Checksum: 1e9bf164f
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:32 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4.4 Final Placement Cleanup
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:32 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 4 Post Placement Optimization and Clean-Up | Checksum: 1feecd2f0
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:32 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Ending Placer Task | Checksum: 19a57d45d
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:32 . Memory (MB): peak = 2191.480 ; gain = 0.000
+88 Infos, 9 Warnings, 0 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+place_design: Time (s): cpu = 00:00:53 ; elapsed = 00:00:33 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24838] Running report commands "report_control_sets, report_io, report_utilization" in parallel.
+Running report generation with 2 threads.
+INFO: [Vivado 12-24828] Executing command : report_io -file NEXYS_A7_io_placed.rpt
+report_io: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.235 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_control_sets -verbose -file NEXYS_A7_control_sets_placed.rpt
+report_control_sets: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.054 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_utilization -file NEXYS_A7_utilization_placed.rpt -pb NEXYS_A7_utilization_placed.pb
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.032 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.052 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.480 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.552 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_placed.dcp' has been generated.
+Command: phys_opt_design
+Attempting to get a license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+
+Starting Initial Update Timing Task
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:02 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado_Tcl 4-2279] Estimated Timing Summary | WNS= 0.646 | TNS= 0.000 | 
+INFO: [Vivado_Tcl 4-383] Design worst setup slack (WNS) is greater than or equal to 0.000 ns. All physical synthesis setup optimizations will be skipped.
+INFO: [Vivado_Tcl 4-232] No setup violation found. The netlist was not modified.
+INFO: [Common 17-83] Releasing license: Vivado_Implementation
+99 Infos, 9 Warnings, 0 Critical Warnings and 0 Errors encountered.
+phys_opt_design completed successfully
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.038 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.051 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.496 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.030 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.590 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_physopt.dcp' has been generated.
+Command: route_design
+Attempting to get a license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 2 CPUs
+
+Phase 1 Build RT Design
+Checksum: PlaceDB: 364573d7 ConstDB: 0 ShapeSum: b24000f0 RouteDB: b1d25f96
+Post Restoration Checksum: NetGraph: addad14d | NumContArr: cd468782 | Constraints: c2a8fa9d | Timing: c2a8fa9d
+Phase 1 Build RT Design | Checksum: 300734e09
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:34 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2 Router Initialization
+
+Phase 2.1 Fix Topology Constraints
+Phase 2.1 Fix Topology Constraints | Checksum: 300734e09
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:34 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.2 Pre Route Cleanup
+Phase 2.2 Pre Route Cleanup | Checksum: 300734e09
+
+Time (s): cpu = 00:00:39 ; elapsed = 00:00:34 . Memory (MB): peak = 2191.480 ; gain = 0.000
+ Number of Nodes with overlaps = 0
+
+Phase 2.3 Update Timing
+Phase 2.3 Update Timing | Checksum: 294e0b19b
+
+Time (s): cpu = 00:00:46 ; elapsed = 00:00:38 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.724  | TNS=0.000  | WHS=-1.157 | THS=-538.759|
+
+
+Phase 2.4 Update Timing for Bus Skew
+
+Phase 2.4.1 Update Timing
+Phase 2.4.1 Update Timing | Checksum: 2908c4236
+
+Time (s): cpu = 00:00:50 ; elapsed = 00:00:40 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.724  | TNS=0.000  | WHS=-2.166 | THS=-264.792|
+
+Phase 2.4 Update Timing for Bus Skew | Checksum: 2466b0c78
+
+Time (s): cpu = 00:00:50 ; elapsed = 00:00:41 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 2.5 Soft Constraint Pins - Fast Budgeting
+Phase 2.5 Soft Constraint Pins - Fast Budgeting | Checksum: 2466b0c78
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:41 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 0 %
+  Global Horizontal Routing Utilization  = 0 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 9426
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 9426
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 2 Router Initialization | Checksum: 2e292905c
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:41 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 3 Global Routing
+Phase 3 Global Routing | Checksum: 2e292905c
+
+Time (s): cpu = 00:00:51 ; elapsed = 00:00:41 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 4 Initial Routing
+
+Phase 4.1 Initial Net Routing Pass
+Phase 4.1 Initial Net Routing Pass | Checksum: 1e1504e05
+
+Time (s): cpu = 00:00:53 ; elapsed = 00:00:42 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 4 Initial Routing | Checksum: 1e1504e05
+
+Time (s): cpu = 00:00:53 ; elapsed = 00:00:42 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 5 Rip-up And Reroute
+
+Phase 5.1 Global Iteration 0
+ Number of Nodes with overlaps = 995
+ Number of Nodes with overlaps = 185
+ Number of Nodes with overlaps = 47
+ Number of Nodes with overlaps = 24
+ Number of Nodes with overlaps = 5
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.732  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+Phase 5.1 Global Iteration 0 | Checksum: 28c927054
+
+Time (s): cpu = 00:01:02 ; elapsed = 00:00:49 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 5.2 Global Iteration 1
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 10
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.885  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+Phase 5.2 Global Iteration 1 | Checksum: 248b25172
+
+Time (s): cpu = 00:01:03 ; elapsed = 00:00:50 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 5 Rip-up And Reroute | Checksum: 248b25172
+
+Time (s): cpu = 00:01:03 ; elapsed = 00:00:50 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 6 Delay and Skew Optimization
+
+Phase 6.1 Delay CleanUp
+Phase 6.1 Delay CleanUp | Checksum: 248b25172
+
+Time (s): cpu = 00:01:03 ; elapsed = 00:00:50 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 6.2 Clock Skew Optimization
+Phase 6.2 Clock Skew Optimization | Checksum: 248b25172
+
+Time (s): cpu = 00:01:03 ; elapsed = 00:00:50 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 6 Delay and Skew Optimization | Checksum: 248b25172
+
+Time (s): cpu = 00:01:03 ; elapsed = 00:00:50 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 7 Post Hold Fix
+
+Phase 7.1 Hold Fix Iter
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.899  | TNS=0.000  | WHS=-1.473 | THS=-114.353|
+
+
+Phase 7.1.1 Lut RouteThru Assignment for hold
+Phase 7.1.1 Lut RouteThru Assignment for hold | Checksum: 23189f41c
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:53 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 7.1 Hold Fix Iter | Checksum: 23189f41c
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:53 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 7.2 Non Free Resource Hold Fix Iter
+Phase 7.2 Non Free Resource Hold Fix Iter | Checksum: 2ddd713f0
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:53 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Phase 7 Post Hold Fix | Checksum: 2ddd713f0
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:53 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 8 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 1.85877 %
+  Global Horizontal Routing Utilization  = 1.88917 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 8 Route finalize | Checksum: 2ddd713f0
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:54 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 9 Verifying routed nets
+
+ Verification completed successfully
+Phase 9 Verifying routed nets | Checksum: 2ddd713f0
+
+Time (s): cpu = 00:01:09 ; elapsed = 00:00:54 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 10 Depositing Routes
+Phase 10 Depositing Routes | Checksum: 28affb252
+
+Time (s): cpu = 00:01:10 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 11 Post Process Routing
+Phase 11 Post Process Routing | Checksum: 28affb252
+
+Time (s): cpu = 00:01:10 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Phase 12 Post Router Timing
+
+Phase 12.1 Update Timing
+Phase 12.1 Update Timing | Checksum: 28affb252
+
+Time (s): cpu = 00:01:12 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Route 35-57] Estimated Timing Summary | WNS=0.899  | TNS=0.000  | WHS=0.019  | THS=0.000  |
+
+INFO: [Route 35-327] The final timing numbers are based on the router estimated timing analysis. For a complete and accurate timing signoff, please run report_timing_summary.
+Phase 12 Post Router Timing | Checksum: 28affb252
+
+Time (s): cpu = 00:01:12 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Total Elapsed time in route_design: 55.267 secs
+
+Phase 13 Post-Route Event Processing
+Phase 13 Post-Route Event Processing | Checksum: 1b8d21a46
+
+Time (s): cpu = 00:01:12 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Route 35-16] Router Completed Successfully
+Ending Routing Task | Checksum: 1b8d21a46
+
+Time (s): cpu = 00:01:12 ; elapsed = 00:00:55 . Memory (MB): peak = 2191.480 ; gain = 0.000
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Vivado_Implementation
+112 Infos, 9 Warnings, 0 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:01:12 ; elapsed = 00:00:56 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_drc -file NEXYS_A7_drc_routed.rpt -pb NEXYS_A7_drc_routed.pb -rpx NEXYS_A7_drc_routed.rpx
+Command: report_drc -file NEXYS_A7_drc_routed.rpt -pb NEXYS_A7_drc_routed.pb -rpx NEXYS_A7_drc_routed.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_drc_routed.rpt.
+report_drc completed successfully
+INFO: [Vivado 12-24828] Executing command : report_methodology -file NEXYS_A7_methodology_drc_routed.rpt -pb NEXYS_A7_methodology_drc_routed.pb -rpx NEXYS_A7_methodology_drc_routed.rpx
+Command: report_methodology -file NEXYS_A7_methodology_drc_routed.rpt -pb NEXYS_A7_methodology_drc_routed.pb -rpx NEXYS_A7_methodology_drc_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-133] Running Methodology with 2 threads
+INFO: [Vivado_Tcl 2-1520] The results of Report Methodology are in file C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_methodology_drc_routed.rpt.
+report_methodology completed successfully
+report_methodology: Time (s): cpu = 00:00:14 ; elapsed = 00:00:07 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24828] Executing command : report_timing_summary -max_paths 10 -routable_nets -report_unconstrained -file NEXYS_A7_timing_summary_routed.rpt -pb NEXYS_A7_timing_summary_routed.pb -rpx NEXYS_A7_timing_summary_routed.rpx -warn_on_violation 
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+WARNING: [Timing 38-436] There are set_bus_skew constraint(s) in this design. Please run report_bus_skew to ensure that bus skew requirements are met.
+report_timing_summary: Time (s): cpu = 00:00:15 ; elapsed = 00:00:14 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Vivado 12-24838] Running report commands "report_incremental_reuse, report_route_status" in parallel.
+Running report generation with 2 threads.
+INFO: [Vivado 12-24828] Executing command : report_incremental_reuse -file NEXYS_A7_incremental_reuse_routed.rpt
+INFO: [Vivado_Tcl 4-1062] Incremental flow is disabled. No incremental reuse Info to report.
+INFO: [Vivado 12-24828] Executing command : report_route_status -file NEXYS_A7_route_status.rpt -pb NEXYS_A7_route_status.pb
+INFO: [Vivado 12-24828] Executing command : report_power -file NEXYS_A7_power_routed.rpt -pb NEXYS_A7_power_summary_routed.pb -rpx NEXYS_A7_power_routed.rpx
+Command: report_power -file NEXYS_A7_power_routed.rpt -pb NEXYS_A7_power_summary_routed.pb -rpx NEXYS_A7_power_routed.rpx
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+129 Infos, 10 Warnings, 0 Critical Warnings and 0 Errors encountered.
+report_power completed successfully
+INFO: [Vivado 12-24828] Executing command : report_clock_utilization -file NEXYS_A7_clock_utilization_routed.rpt
+INFO: [Vivado 12-24828] Executing command : report_bus_skew -warn_on_violation -file NEXYS_A7_bus_skew_routed.rpt -pb NEXYS_A7_bus_skew_routed.pb -rpx NEXYS_A7_bus_skew_routed.rpx
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+generate_parallel_reports: Time (s): cpu = 00:00:37 ; elapsed = 00:00:27 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.056 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.148 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote PlaceStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.551 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.017 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2191.480 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.738 . Memory (MB): peak = 2191.480 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7_routed.dcp' has been generated.
+Command: write_bitstream -force NEXYS_A7.bit
+Attempting to get a license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Vivado_Implementation' and/or device 'xc7a100t'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado 12-3199] DRC finished with 0 Errors
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+Integrating Hard IP ELF/MEM with the PDI.
+INFO: [Designutils 20-2272] Running write_bitstream with 2 threads.
+Initializing bitstream generation complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.843 . Memory (MB): peak = 2237.359 ; gain = 45.879
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ./NEXYS_A7.bit...
+Generate Bitstream complete. Time (s): cpu = 00:00:19 ; elapsed = 00:00:13 . Memory (MB): peak = 2492.875 ; gain = 301.395
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Common 17-83] Releasing license: Vivado_Implementation
+143 Infos, 10 Warnings, 0 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 2492.875 ; gain = 301.395
+INFO: [Common 17-206] Exiting Vivado at Fri Nov 13 00:02:01 2026...
+[Fri Nov 13 00:02:05 2026] impl_1 finished
+wait_on_runs: Time (s): cpu = 00:00:00 ; elapsed = 00:03:52 . Memory (MB): peak = 660.570 ; gain = 0.000
+# set impl_status [get_property STATUS [get_runs impl_1]]
+# if {[string first "Complete!" $impl_status] < 0} {
+#     error "Implementation failed: $impl_status"
+# }
+# puts "Bitstream ready: [file join [file dirname $project_file] DCLAB3.runs impl_1 NEXYS_A7.bit]"
+Bitstream ready: C:/DCLAB3_vivado/DCLAB3/DCLAB3.runs/impl_1/NEXYS_A7.bit
+# close_project
+INFO: [Common 17-206] Exiting Vivado at Fri Nov 13 00:02:05 2026...

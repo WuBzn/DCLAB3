@@ -114,6 +114,8 @@ module NEXYS_A7 #(
     logic reverse_select, reverse_mode;
     logic [3:0] speed_select;
     logic [4:0] display_seconds;
+    logic [6:0] volume_bar;
+    logic signed [31:0] volume_env_q;
     
     clk_wiz_0 clk_wiz(
     .reset(BTNC),
@@ -175,10 +177,28 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // LED9 shows the direction latched when recording began.
-    // LED[8:5] mirrors speed; LED[4:0] shows recorder status.
-    assign LED = {6'b0, reverse_mode, speed_select,
+    // Show microphone level while recording and output level while playing.
+    Pdm_Volume_Meter volume_meter0 (
+        .clk(M_CLK),
+        .rst(BTNC || !locked),
+        .enable(recording || playing),
+        .pdm_bit(recording ? M_DATA : audio_bit),
+        .bar(volume_bar),
+        .env_level_q(volume_env_q)
+    );
+
+    ila_0 ila_volume0 (
+        .clk(M_CLK),
+        .probe0(volume_env_q)
+    );
+
+    // LED9-15 shows the volume bar; LED16 red shows the latched direction.
+    // LED5-8 mirrors speed; LED0-4 shows recorder status.
+    assign LED = {volume_bar, speed_select,
                   overflow, recorded, paused, playing, recording};
+    assign LED16_R = reverse_mode;
+    assign LED16_G = 1'b0;
+    assign LED16_B = 1'b0;
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),

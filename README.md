@@ -1,16 +1,16 @@
 # Lab 3：Digital Voice Recorder
 
-Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DDR2，並由音訊輸出播放。此分支支援正常或倒轉播放、暫停、停止、2～8 倍快放，以及 1/2～1/8 倍慢放。
+Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DDR2，並由音訊輸出播放。`integrated` 分支結合正常／倒轉播放、暫停、停止、2～8 倍快放、1/2～1/8 倍慢放、七段顯示器與七格音量條。
 
-## 目前進度（2026-11-12）
+## 目前進度（2026-11-13）
 
 - 錄音、DDR2 儲存與正常播放已完成。音訊時鐘為 3.125 MHz，錄音上限為 16 秒（`MAX_WORDS = 781_250` 個 64-bit 字）。
 - 快放每個輸出週期消耗 `n` 個原始 PDM 位元，使用累加器維持輸出 `1` 的密度；慢放把每個原始位元重複 `n` 次。播放位置可跨越 64-bit 字邊界，播放中可切換倍率。
 - 已加入播放前預讀，以及下一個 64-bit 字的緩衝。暫停會保留播放進度，停止後可從頭重播。
-- 倒轉方向由按下錄音鍵當下的 `SW4` 決定，直到下一次錄音或重設都不改變。倒轉播放由 DDR2 最後一個字往前讀，每個字由 bit0 往 bit63 輸出；可搭配原有變速與暫停。交易級模擬已通過，尚待板測與新版 bitstream 建置。
-- 使用者已在實體板上做初步測試，回報目前看起來功能正常；各倍率的實測播放時間與長時間穩定性尚未記錄。
-- `bonus` 分支已加入八位七段顯示器：狀態、原錄音位置秒數及播放倍率。顯示器 RTL 與模擬已完成；新版 bitstream 已產生，板測仍待進行。
-- Vivado 2026.1 曾於 2026-11-09 為 bonus 版本產生 bitstream，位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.runs\impl_1\NEXYS_A7.bit`；這是歷史建置結果，**不含本分支的倒轉功能**。RTL 原始檔位於本資料夾，Vivado 專案位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.xpr`。
+- 倒轉方向由按下錄音鍵當下的 `SW4` 決定，直到下一次錄音或重設都不改變。倒轉播放由 DDR2 最後一個字往前讀，每個字由 bit0 往 bit63 輸出；可搭配變速與暫停。
+- 音量條使用 `volume-LED` 分支已在板上測過的 PDM 音量計。`LED9～LED15` 顯示七格音量，`LED16` 的紅色顯示已鎖定的倒轉方向。
+- 使用者已分別在實體板上測過音量條與播放功能；整合版本仍需上板驗證。
+- Vivado 2026.1 已完成整合版的綜合、布局繞線與 bitstream 產生。可燒錄檔案為 `C:\DCLAB3_vivado\DCLAB3\NEXYS_A7_integrated.bit`；Vivado 專案位於 `C:\DCLAB3_vivado\DCLAB3\DCLAB3.xpr`。
 
 ## 板上操作
 
@@ -31,17 +31,29 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | `0001`～`0111` | 2×～8× |
 | `1001`～`1111` | 1/2×～1/8× |
 
-`LED9` 顯示已鎖定的方向（亮為倒轉）；`LED[8:5]` 顯示同步後的四位速度設定。`LED0` 為錄音中、`LED1` 為播放中、`LED2` 為暫停、`LED3` 為已有錄音、`LED4` 為錄音溢位或播放資料供應不足。`LED4` 會保持亮起，直到重設或開始新錄音。停止後再次按 `BTNR`，會依同一方向從頭重播；要改方向需重新錄音。
+`LED16` 紅色顯示已鎖定的方向（亮為倒轉）。`LED9～LED15` 為音量條；`LED[8:5]` 顯示同步後的四位速度設定。`LED0` 為錄音中、`LED1` 為播放中、`LED2` 為暫停、`LED3` 為已有錄音、`LED4` 為錄音溢位或播放資料供應不足。`LED4` 會保持亮起，直到重設或開始新錄音。停止後再次按 `BTNR`，會依同一方向從頭重播；要改方向需重新錄音。
+
+### LED9～LED15 音量條
+
+錄音時顯示麥克風 PDM 音量，播放時顯示送往音訊輸出的 PDM 音量；停止、暫停與播放前預讀時全暗。由 LED9 起往 LED15 依序增加亮燈數。音量計每 64 個 PDM 位元計算一次密度，扣除緩慢變動的直流偏移後取絕對值，再平滑成相對振幅。這不是校準過的聲壓分貝值。門檻為 `0.5、0.75、1、1.5、2、3、4`，定義在 `Pdm_Volume_Meter.sv`。
+
+在現有 Vivado 專案重新產生 bitstream：
+
+```powershell
+C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_integrated.tcl
+```
+
+腳本會先備份現有 bitstream，加入音量計與跨時脈約束檔，執行綜合及實作；只有最終 setup／hold 餘裕都非負時，才把 bitstream 複製到上述可燒錄檔案。專案需保有既有的 `ila_0` IP。
 
 ## 七段顯示器（bonus）
 
-八位數由左至右分成三位狀態、兩位原錄音位置秒數、三位速度。正常播放時秒數隨消耗的原始音訊位元遞增；倒轉播放時從錄音總長倒數至 `00`。快放、慢放與暫停仍顯示錄音內容中的位置，而不是實際播放耗時。錄音最多顯示 `16` 秒；停止時顯示錄音總長。倒轉方向可由 LED9 判斷。
+八位數由左至右分成三位狀態、兩位原錄音位置秒數、三位速度。正常播放時秒數隨消耗的原始音訊位元遞增；倒轉播放時從錄音總長倒數至 `00`。快放、慢放與暫停仍顯示錄音內容中的位置，而不是實際播放耗時。錄音最多顯示 `16` 秒；停止時顯示錄音總長。倒轉方向可由 LED16 紅燈判斷。
 
 | 顯示 | 意義 |
 | --- | --- |
 | `rEC05---` | 正在錄音，已錄 5 秒 |
 | `PLY05F04` | 播放到原錄音第 5 秒，4× 快放 |
-| `PLY12n01` 且 LED9 亮 | 倒轉播放中，原錄音位置約剩 12 秒 |
+| `PLY12n01` 且 LED16 紅燈亮 | 倒轉播放中，原錄音位置約剩 12 秒 |
 | `PAU05S04` | 暫停在原錄音第 5 秒，速度設定 1/4× |
 | `PLY05n01` | 正常速度播放 |
 | `StP12---` | 已停止，錄音總長 12 秒 |
@@ -54,6 +66,9 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | 檔案 | 用途 |
 | --- | --- |
 | `NEXYS_A7.sv` | 板上頂層：時鐘、按鍵、開關同步、LED、麥克風、音訊與 DDR2 接線 |
+| `Pdm_Volume_Meter.sv` | 將 PDM 資料轉為七格相對音量條 |
+| `cdc_timing.xdc` | 限制已握手的音訊時脈至 DDR2 使用者時脈資料路徑延遲 |
+| `build_integrated.tcl` | 備份舊 bitstream、建置整合版並檢查最終時序 |
 | `Top.sv` | 錄音／播放狀態機、方向鎖定、64-bit 資料緩衝、DDR2 請求、變速與原錄音秒數計算 |
 | `ddr2_interface.sv` | Top 與 MIG 之間的 DDR2 交易及跨時鐘域同步 |
 | `Debounce.sv` | 按鍵同步、去彈跳與按下脈波 |
@@ -61,6 +76,7 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 | `Nexys-A7-100T-Master.xdc`、`mig.ucf` | 板上腳位與 DDR2 相關約束 |
 | `sim/Top_speed_tb.sv` | 使用交易級 DDR2 模型驗證錄音及所有速度模式 |
 | `sim/Seven_Segment_Display_tb.sv` | 驗證八位掃描、狀態、秒數及速度字型 |
+| `sim/Pdm_Volume_Meter_tb.sv` | 驗證音量門檻、衰減、清空與直流偏移抑制 |
 | `sim/Top_vivado_tb.sv` | 使用 Vivado IP 與 DDR2 模型的整合測試平台 |
 
 ## 已做的驗證
@@ -79,15 +95,23 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
   vvp "$env:TEMP\Seven_Segment_Display_tb.vvp"
   ```
 
+- `sim/Pdm_Volume_Meter_tb.sv` 驗證靜音、音量門檻、衰減、停止時清空及固定直流偏移抑制：
+
+  ```powershell
+  iverilog -g2012 -s Pdm_Volume_Meter_tb -o "$env:TEMP\Pdm_Volume_Meter_tb.vvp" Pdm_Volume_Meter.sv sim/Pdm_Volume_Meter_tb.sv
+  vvp "$env:TEMP\Pdm_Volume_Meter_tb.vvp"
+  ```
+
+- 2026-11-13 的整合版 routed timing report 顯示 WNS `+0.787 ns`、WHS `+0.036 ns`、TNS/THS 均為 `0`；bitstream 前 DRC 為 `0 errors`。速度／倒轉、音量計與七段顯示器三組 Icarus 模擬皆通過。
+
 - 2026-11-09 的新版 routed timing report 顯示 WNS `+0.682 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；bitstream 前 DRC 為 `0 errors`。時鐘方法學警告仍如後述，正餘裕只代表目前約束下的結果。
 
 - 2026-11-04 的 routed timing report 顯示 WNS `+0.589 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；路由完成，bitstream 前的 DRC 為 `0 errors`。
-- 完整 MIG＋DDR2 行為模擬在記憶體模型初始化階段出現 `Load Mode Failure: All banks must be Precharged`，尚未進入音訊測試。交易級測試已通過、初步板測看起來正常，但此整合模擬尚未通過。
 
 ## 已知警告與後續工作
 
-1. **時鐘約束需整理。** `Nexys-A7-100T-Master.xdc` 第 9 行與 Clock Wizard 產生的 XDC 對同一個 100 MHz 輸入建立兩個 primary clocks。Methodology report 有 44 筆 `TIMING-6` critical warnings 及 21 筆 `TIMING-56`。應保留一個正確的時鐘定義後重新檢查時序；目前的正餘裕只代表現有約束下的結果。
+1. **跨時脈資料路徑。** 已移除重複的 100 MHz `create_clock`，並對錄音資料到 MIG 的握手傳輸加上 `set_max_delay -datapath_only 10 ns`。最終 Methodology report 的 `TIMING-47` 指出此約束跨越兩個有關聯的時脈；該路徑的地址／資料由請求開始一直保持到交易完成，故依握手協定使用此約束。若調整 DDR2 介面或握手機制，需重新審核約束。
 2. **非同步重設網路需檢查。** `LUTAR-1` 指出 LUT 驅動非同步 reset，可能有毛刺風險；若板上偶發自行重置，優先檢查 `Top.sv` 的 `locked && !rst` 及相關重設路徑。
-3. **DDR2 時鐘警告需留意。** `REQP-1709` 指出 MIG PLL 輸出使用不同類型的 clock buffer，可能影響相位對齊。以板上 DDR2 校準、錄音及讀回穩定性作為後續驗證重點；不要直接修改產生的 IP 檔案。
-4. 倒轉版尚需重新產生 bitstream 並上板驗證：先以 `SW4=0` 錄一段，再以 `SW4=1` 錄一段，確認 LED9、播放方向、倒數秒數；錄音後切換 SW4 不應改變方向。既有 bonus bitstream 不含倒轉功能。`PLIO-3` 主要來自未使用外設的部分腳位約束；`CFGBVS-1` 表示尚未指定配置電壓屬性。
+3. **完整 DDR2 行為模擬尚未通過。** 記憶體模型初始化仍出現 `Load Mode Failure: All banks must be Precharged`；交易級模擬及 Vivado 實作已通過，但整合版需以實體板確認 DDR2 校準、錄音及讀回穩定性。
+4. 整合版需上板驗證：先以 `SW4=0` 錄一段，再以 `SW4=1` 錄一段，確認 LED16 紅燈、播放方向、倒數秒數，以及 LED9～LED15 的音量變化；錄音後切換 SW4 不應改變方向。
 5. 記錄完整的板測結果：同一段錄音的 1× 時間為 `T` 時，確認各檔快放約為 `T/n`、慢放約為 `nT`，並確認長時間播放時 `LED4` 不亮。
