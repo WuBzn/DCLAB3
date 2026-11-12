@@ -131,6 +131,11 @@ module NEXYS_A7 #(
     logic [9:0] game_source_y, game_goal_y;
     logic [7:0] game_initial_locked;
     logic [9:0] game_ball_x;
+    logic [79:0] game_pipe_x_list;
+    logic [6:0] game_pipe_half;
+    logic [4:0] game_tube_half;
+    logic [3:0] game_ball_radius;
+    logic [1:0] game_sensitivity_video;
     logic rec_CA,rec_CB,rec_CC,rec_CD,rec_CE,rec_CF,rec_CG,rec_DP;
     logic game_CA,game_CB,game_CC,game_CD,game_CE,game_CF,game_CG,game_DP;
     logic [7:0] rec_AN,game_AN;
@@ -163,6 +168,11 @@ module NEXYS_A7 #(
     ff_sync game_mode_video_sync(
         .clk(CLK100MHZ), .rst_p(BTNC || !locked),
         .in_async(SW[15]), .out(game_mode_video)
+    );
+    // SW1/SW0 choose the game microphone sensitivity (shown on the VGA).
+    ff_sync #(.WIDTH(2)) game_sensitivity_sync(
+        .clk(CLK100MHZ), .rst_p(BTNC || !locked),
+        .in_async(SW[1:0]), .out(game_sensitivity_video)
     );
     ff_sync #(.WIDTH(8)) game_direction_sync(
         .clk(CLK100MHZ), .rst_p(BTNC || !locked),
@@ -219,15 +229,27 @@ module NEXYS_A7 #(
         .bar(volume_bar),
         .env_level_q(volume_env_q)
     );
-    // Speech-friendly game thresholds: half the recorder meter thresholds.
+    // Game thresholds: a base of 0.25, 0.375, 0.5, 0.75, 1, 1.5, 2 meter
+    // levels, scaled by SW[1:0] = 00/01/10/11 to 1.5x/2x/2.5x/3x. 2x equals
+    // the recorder meter. speed_select[1:0] is SW[1:0] synchronized to M_CLK.
+    function automatic logic signed [31:0] game_threshold(
+        input logic signed [31:0] base, input logic [1:0] sensitivity
+    );
+        case (sensitivity)
+            2'd0:    game_threshold = base + (base >>> 1);
+            2'd1:    game_threshold = base <<< 1;
+            2'd2:    game_threshold = (base <<< 1) + (base >>> 1);
+            default: game_threshold = base * 3;
+        endcase
+    endfunction
     assign game_volume_bar_audio = {
-        volume_env_q >= 32'sd131072,
-        volume_env_q >= 32'sd98304,
-        volume_env_q >= 32'sd65536,
-        volume_env_q >= 32'sd49152,
-        volume_env_q >= 32'sd32768,
-        volume_env_q >= 32'sd24576,
-        volume_env_q >= 32'sd16384
+        volume_env_q >= game_threshold(32'sd131072, speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd98304,  speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd65536,  speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd49152,  speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd32768,  speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd24576,  speed_select[1:0]),
+        volume_env_q >= game_threshold(32'sd16384,  speed_select[1:0])
     };
     ff_sync #(.WIDTH(7)) game_volume_sync(
         .clk(CLK100MHZ), .rst_p(BTNC || !locked),
@@ -253,7 +275,9 @@ module NEXYS_A7 #(
         .target_positions(game_targets),
         .initial_positions(game_initial_positions),
         .initial_locked(game_initial_locked),
-        .mid_codes(game_mid_codes), .end_codes(game_end_codes)
+        .mid_codes(game_mid_codes), .end_codes(game_end_codes),
+        .pipe_x_list(game_pipe_x_list), .pipe_half(game_pipe_half),
+        .tube_half(game_tube_half), .ball_radius(game_ball_radius)
     );
     Game_Controller game0 (
         .clk(CLK100MHZ), .rst(BTNC || !locked), .enable(game_mode_video),
@@ -264,6 +288,8 @@ module NEXYS_A7 #(
         .target_positions(game_targets),
         .initial_positions(game_initial_positions),
         .initial_locked(game_initial_locked),
+        .mid_codes(game_mid_codes), .end_codes(game_end_codes),
+        .pipe_half(game_pipe_half), .tube_half(game_tube_half),
         .state(game_state), .level(game_level), .selected(game_selected),
         .seconds_left(game_seconds), .pipe_locked(game_locked),
         .pipe_positions(game_positions), .ball_x(game_ball_x)
@@ -277,6 +303,9 @@ module NEXYS_A7 #(
         .source_y(game_source_y), .goal_y(game_goal_y),
         .target_positions(game_targets),
         .mid_codes(game_mid_codes), .end_codes(game_end_codes),
+        .pipe_x_list(game_pipe_x_list), .pipe_half(game_pipe_half),
+        .tube_half(game_tube_half), .ball_radius(game_ball_radius),
+        .sensitivity(game_sensitivity_video),
         .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B),
         .VGA_HS(VGA_HS), .VGA_VS(VGA_VS)
     );

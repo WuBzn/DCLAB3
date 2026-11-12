@@ -14,6 +14,10 @@ module Game_Display_tb;
     wire [9:0] source_y, goal_y;
     wire [15:0] mid_codes, end_codes;
     wire [5:0] time_limit;
+    wire [79:0] pipe_x_list;
+    wire [6:0] pipe_half;
+    wire [4:0] tube_half;
+    wire [3:0] ball_radius;
     logic [9:0] ball_x=48;
     logic [6:0] volume_bar=7'b0001111;
     wire [3:0] r,g,b;
@@ -28,7 +32,9 @@ module Game_Display_tb;
         .target_positions(target_positions),
         .initial_positions(initial_positions),
         .initial_locked(initial_locked),
-        .mid_codes(mid_codes), .end_codes(end_codes)
+        .mid_codes(mid_codes), .end_codes(end_codes),
+        .pipe_x_list(pipe_x_list), .pipe_half(pipe_half),
+        .tube_half(tube_half), .ball_radius(ball_radius)
     );
     Game_VGA video(
         .clk(clk), .rst(rst), .enable(enable),
@@ -39,6 +45,9 @@ module Game_Display_tb;
         .source_y(source_y), .goal_y(goal_y),
         .target_positions(target_positions),
         .mid_codes(mid_codes), .end_codes(end_codes),
+        .pipe_x_list(pipe_x_list), .pipe_half(pipe_half),
+        .tube_half(tube_half), .ball_radius(ball_radius),
+        .sensitivity(2'd2),
         .VGA_R(r), .VGA_G(g), .VGA_B(b), .VGA_HS(hs), .VGA_VS(vs)
     );
     Game_SevenSegment #(.SCAN_TICKS(1)) seven(
@@ -65,20 +74,28 @@ module Game_Display_tb;
         repeat(8) @(negedge clk);
         if (AN !== 8'b11110111 || {CG,CF,CE,CD,CC,CB,CA} !== 7'b0000010)
             $fatal(1,"60-second scan incorrect");
+        // Colour and sync are registered together, one pixel late.
         wait(video.h == 10'd656);
         @(negedge clk);
+        if (hs !== 1'b1) $fatal(1,"horizontal sync asserted early");
+        wait(video.h == 10'd657);
+        @(negedge clk);
         if (hs !== 1'b0) $fatal(1,"horizontal sync did not assert");
-        wait(video.h == 10'd752);
+        wait(video.h == 10'd753);
         @(negedge clk);
         if (hs !== 1'b1) $fatal(1,"horizontal sync did not deassert");
-        wait(video.v == 10'd1 && video.h == 0);
+        wait(video.h == 10'd101);
+        @(negedge clk);
+        if ({r,g,b} !== video.rgb_q || video.rgb_q === 12'h000)
+            $fatal(1,"visible colour is not driven");
+        wait(video.v == 10'd1 && video.h == 1);
         @(negedge clk);
         if (vs !== 1'b1) $fatal(1,"vertical sync asserted in visible area");
         force video.v = 10'd490;
-        #1;
+        repeat(5) @(negedge clk);
         if (vs !== 1'b0) $fatal(1,"vertical sync did not assert");
         force video.v = 10'd492;
-        #1;
+        repeat(5) @(negedge clk);
         if (vs !== 1'b1) $fatal(1,"vertical sync did not deassert");
         release video.v;
         $display("Game_Display_tb PASS");

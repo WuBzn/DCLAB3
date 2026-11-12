@@ -4,28 +4,56 @@ Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DD
 
 ## 聲控管道遊戲（`game` 分支）
 
-將 Nexys A7 的 VGA 接到支援 640×480 VGA 的外接螢幕。遊戲使用板載麥克風的即時音量；安靜時管子不動，發聲越大，每 50 ms 移動越多（1～7 像素）。只有目前選取的管段會動。管段接近正確高度時會吸附並變成綠色；全部接通後球自動滾進右側洞口。三關分別有 **4 段／40 秒、6 段／50 秒、8 段／60 秒**。每段可形成彎頭或 S 形，三關的球起點／洞口高度分別是 264／212、208／260、290／238 像素。遊戲音量條門檻降為原錄音音量條的一半，錄音功能原本的門檻不變。
+將 Nexys A7 的 VGA 接到支援 640×480 VGA 的外接螢幕。遊戲使用板載麥克風的即時音量；安靜時管子不動，發聲越大，每 50 ms 移動越多（1～7 像素）。只有目前選取的管段會動。管段接近正確高度時會吸附並變成綠色；全部接通後球自動滾進右側洞口。三關分別有 **4 段／40 秒、6 段／50 秒、8 段／60 秒**。每段可形成彎頭或 S 形。
 
-![RTL 模擬產生的遊戲畫面](docs/game_preview.png)
+管段平均分布在起點與洞口之間，管段越少畫得越大：
 
-畫面預覽：[DCLAB GROUP11 首頁](docs/game_page0.png) · [操作說明](docs/game_page1.png) · [關卡預覽](docs/game_page2.png)。
+| 關卡 | 管段 | 管寬／間距 | 斜坡高低差 | 球起點／洞口高度 |
+| --- | --- | --- | --- | --- |
+| 1 | 4 | 104／120 像素 | 52 像素 | 330／226 |
+| 2 | 6 | 68／80 像素 | 34 像素 | 204／272 |
+| 3 | 8 | 52／60 像素 | 26 像素 | 290／238 |
+
+每段管子的上下移動範圍依形狀計算，整段管子（含外框）保持在 y=128～412 之間，不會蓋到上方開關卡片或下方 VOICE 條。
+
+![RTL 模擬產生的遊戲畫面（第 3 關）](docs/game_preview.png)
+
+畫面預覽：[DCLAB GROUP11 首頁](docs/game_page0.png) · [操作說明](docs/game_page1.png) · [第 1 關預覽](docs/game_page2.png) · [第 1 關遊戲中](docs/game_level1.png) · [第 2 關遊戲中](docs/game_level2.png)。
+
+說明頁用圖示表示四個步驟：① 板上五顆按鍵的十字排列，`BTNL`／`BTNR` 亮起並示範選段；② 撥桿上下切換，旁邊的管子跟著上下移動；③ 麥克風，聲波弧線隨即時音量亮起；④ 接通的管子把球送進洞口。下方是 `BTNU PREVIEW`／`BTND RESET` 按鍵圖示、麥克風試音條，以及 `SW1`／`SW0` 撥桿與目前靈敏度。
+
+### 麥克風靈敏度（SW1、SW0）
+
+遊戲模式下用 `SW[1:0]` 選擇靈敏度，可在遊戲中直接切換，目前倍率顯示在說明頁和遊戲畫面右下角。倍率越大越不敏感；基準門檻是錄音機音量條門檻的一半（0.25～2 級）。
+
+| `SW1 SW0` | 門檻倍率 | 相當於錄音機音量條門檻 |
+| --- | --- | --- |
+| `0 0` | 1.5× | 0.75 倍 |
+| `0 1` | 2× | 相同 |
+| `1 0` | 2.5× | 1.25 倍 |
+| `1 1` | 3× | 1.5 倍 |
+
+VOICE 條和 `LED9`～`LED15` 使用同一組門檻；安靜時兩者應全暗。錄音功能原本的門檻不變（錄音模式下 `SW[3:0]` 仍是播放速度）。
 
 切換流程：**SW15 撥下**顯示 DCLAB GROUP11 首頁；**SW15 撥上**顯示操作說明；**第一次按 BTNU** 進入關卡預覽（時間不減）；**第二次按 BTNU** 才開始倒數與移動。過關按 BTNU 進下一關預覽，再按一次開始該關。
 
 | 操作 | 遊戲功能 |
 | --- | --- |
 | `SW15` | 撥下顯示 DCLAB GROUP11 首頁並使用原錄音機功能；撥上進入遊戲說明 |
-| `SW14`～`SW7` | 由左至右第 1～8 段的方向；撥上（1）往上、撥下（0）往下。每段上方標有 SW 號碼與 `UP`／`DN`；只需設定本關出現的 4／6／8 段 |
+| `SW14`～`SW7` | 由左至右第 1～8 段的方向；撥上（1）往上、撥下（0）往下。每段上方的卡片標有 SW 號碼，並畫出該撥桿目前的位置與上下箭頭；只需設定本關出現的 4／6／8 段 |
+| `SW1`、`SW0` | 麥克風靈敏度，見上方表格 |
 | `BTNL`／`BTNR` | 選取左邊／右邊的管段；只會在本關可移動的管段之間切換 |
 | `BTNU` | 說明頁進入預覽、預覽頁開始計時；過關後進下一關預覽、逾時後重新預覽；全破後回說明頁 |
 | `BTND` | 返回第一關說明頁 |
 | `BTNC` | 重設整個 FPGA 系統 |
 
-七段顯示器格式為 `L1  40P1`：關卡 1、剩餘 40 秒、目前選取第 1 段。VGA 左上 `LEVEL` 三格表示關卡，中間 `TIME` 長條及兩位數表示剩餘秒數，右上 `PIPE` 八格表示各段狀態：青色是選取、橘色待調整、綠色已對齊、暗色尚未用到。下方 `VOICE` 長條表示即時音量。管段和上方標牌比前版縮小，每段標示 `SW14`～`SW07` 與 `UP`／`DN`。板上 `LED0`～`LED7` 表示已接通的管段，`LED8` 表示遊戲模式，`LED9`～`LED15` 顯示遊戲音量。
+七段顯示器格式為 `L1  40P1`：關卡 1、剩餘 40 秒、目前選取第 1 段。VGA 左上 `LEVEL` 三格表示關卡，中間 `TIME` 長條及兩位數表示剩餘秒數，右上 `PIPE` 格數等於本關管段數，表示各段狀態：青色是選取、橘色待調整、綠色已對齊。下方 `VOICE` 長條表示即時音量，右側 `SENS` 顯示目前靈敏度。預覽時 `BTNU START` 提示放在底部，不會擋住管子；過關、逾時與全破的提示框也畫出 `BTNU` 按鍵與 `NEXT`／`RETRY`／`MENU`。板上 `LED0`～`LED7` 表示已接通的管段，`LED8` 表示遊戲模式，`LED9`～`LED15` 顯示遊戲音量。
 
 第一次玩第一關：將 `SW15` 撥上，閱讀說明並按兩次 `BTNU`；保持選取 `P1`，將 `SW14` 撥下，對麥克風發聲直到第一段變綠；按 `BTNR` 選取 `P2`，依灰色虛線目標位置決定將 `SW13` 撥上或撥下，再發聲對齊。對其餘兩段重複操作。全部接通後球自動滾進洞。畫面中的灰色虛線標出各段應對齊的路徑。
 
-遊戲模式會停止正在錄製或播放的音訊；切回 `SW15=0` 後，原錄音機的按鍵和 `SW[4:0]` 設定恢復。遊戲與錄音機共用音量計，遊戲中量測的是即時麥克風。球會沿已接通的固定路徑滾動。VGA 使用 100 MHz 時鐘上的 25 MHz 像素 enable。
+遊戲模式會停止正在錄製或播放的音訊；切回 `SW15=0` 後，原錄音機的按鍵和 `SW[4:0]` 設定恢復。遊戲與錄音機共用音量計，遊戲中量測的是即時麥克風。球會沿已接通的固定路徑滾動。VGA 使用 100 MHz 時鐘上的 25 MHz 像素 enable；像素顏色與 HS／VS 一起經過一級輸出暫存器（整體延遲一個像素），`game_timing.xdc` 對顏色邏輯設定 4 個時脈的 multicycle path。
+
+遊戲邏輯直接使用 100 MHz 板上時鐘。Clock wizard IP 只在自己的內部 `clk_in1` 腳位定義時鐘，碰不到這些邏輯，所以 `game_timing.xdc` 在 `CLK100MHZ` 腳位另外定義 `game_clk`，並把它和 clock wizard 產生的音訊／DDR2 時鐘設為非同步群組（兩邊只透過 `ff_sync` 交換資料）。在此之前的遊戲版本，100 MHz 遊戲邏輯沒有被時序分析涵蓋。管子每 50 ms 的移動分三拍：每個時脈先存下選取管段的資料，tick 前一拍算出新位置與是否吸附，tick 時寫回；全部接通與逾時在 tick 後一拍判斷。
 
 從現有 Vivado 專案建置遊戲 bitstream：
 
@@ -42,11 +70,20 @@ iverilog -g2012 -s Game_Controller_tb -o "$env:TEMP\Game_Controller_tb.vvp" Game
 vvp "$env:TEMP\Game_Controller_tb.vvp"
 ```
 
+遊戲控制測試也會檢查每關路徑連續、管段平均分布、初始與目標位置都在可視範圍內，以及往反方向推時會停在邊界。
+
 VGA 同步時序與遊戲七段顯示器可執行：
 
 ```powershell
 iverilog -g2012 -s Game_Display_tb -o "$env:TEMP\Game_Display_tb.vvp" Game_Level_Config.sv Game_VGA.sv Game_SevenSegment.sv sim/Game_Display_tb.sv
 vvp "$env:TEMP\Game_Display_tb.vvp"
+```
+
+產生畫面截圖（`PAGE` 0 首頁、1 說明、2 第 1 關預覽、3 第 3 關、4 第 1 關、5 第 2 關、6 過關、7 逾時；輸出為 PPM，每張約需 1 分鐘）：
+
+```powershell
+iverilog -g2012 -s Game_VGA_preview_tb -o "$env:TEMP\Game_VGA_preview_tb.vvp" Game_Level_Config.sv Game_VGA.sv sim/Game_VGA_preview_tb.sv
+vvp "$env:TEMP\Game_VGA_preview_tb.vvp" +PAGE=1 +OUT=page1.ppm
 ```
 
 ## 目前進度（2026-11-13）
@@ -114,11 +151,12 @@ C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_integra
 | --- | --- |
 | `NEXYS_A7.sv` | 板上頂層：時鐘、按鍵、開關同步、LED、麥克風、音訊與 DDR2 接線 |
 | `Pdm_Volume_Meter.sv` | 將 PDM 資料轉為七格相對音量條 |
-| `Game_Level_Config.sv` | 三關共用的球起點／洞口、管道彎曲形狀與目標位置 |
-| `Game_Controller.sv` | 選段、聲控位移、三關倒數、管道對齊及球滾動狀態機 |
-| `Game_VGA.sv` | 640×480 遊戲畫面、VGA 同步與 25 MHz 像素 enable |
+| `Game_Level_Config.sv` | 三關的球起點／洞口、管道彎曲形狀、目標位置，以及各關管段位置、寬度、粗細與球大小 |
+| `Game_Controller.sv` | 選段、聲控位移（依管段形狀限制上下範圍）、三關倒數、管道對齊及球滾動狀態機 |
+| `Game_VGA.sv` | 640×480 遊戲畫面與圖示說明頁、VGA 同步、25 MHz 像素 enable 與輸出暫存器 |
 | `Game_SevenSegment.sv` | 遊戲關卡、剩餘時間與選取管段的七段顯示 |
-| `build_game.tcl` | 將遊戲模組加入 Vivado 專案並產生遊戲 bitstream |
+| `game_timing.xdc` | 100 MHz 遊戲時鐘定義、與 clock wizard 時鐘的非同步群組，以及 VGA 顏色邏輯的 multicycle path |
+| `build_game.tcl` | 將遊戲模組與約束加入 Vivado 專案並產生遊戲 bitstream |
 | `cdc_timing.xdc` | 限制已握手的音訊時脈至 DDR2 使用者時脈資料路徑延遲 |
 | `build_integrated.tcl` | 備份舊 bitstream、建置整合版並檢查最終時序 |
 | `Top.sv` | 錄音／播放狀態機、方向鎖定、64-bit 資料緩衝、DDR2 請求、變速與原錄音秒數計算 |
@@ -154,6 +192,8 @@ C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_integra
   vvp "$env:TEMP\Pdm_Volume_Meter_tb.vvp"
   ```
 
+- 2026-11-13 的遊戲版（圖示說明頁、依關卡縮放的管段、`SW[1:0]` 靈敏度）routed timing report 顯示 WNS `+0.606 ns`、WHS `+0.049 ns`、TNS/THS 均為 `0`；`game_clk` 涵蓋 1110 個端點，最差 setup 餘裕 `+0.675 ns`，VGA 顏色邏輯在 40 ns 的 multicycle 預算內。bitstream 前 DRC 為 `0 errors`，`TIMING-17`（暫存器未被時鐘涵蓋）已消失。遊戲控制與 VGA 兩組 Icarus 模擬通過；實體螢幕與麥克風手感尚未上板確認。
+
 - 2026-11-13 的整合版 routed timing report 顯示 WNS `+0.787 ns`、WHS `+0.036 ns`、TNS/THS 均為 `0`；bitstream 前 DRC 為 `0 errors`。速度／倒轉、音量計與七段顯示器三組 Icarus 模擬皆通過。
 
 - 2026-11-09 的新版 routed timing report 顯示 WNS `+0.682 ns`、WHS `+0.019 ns`、TNS/THS 均為 `0`；bitstream 前 DRC 為 `0 errors`。時鐘方法學警告仍如後述，正餘裕只代表目前約束下的結果。
@@ -162,7 +202,7 @@ C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_integra
 
 ## 已知警告與後續工作
 
-1. **跨時脈資料路徑。** 已移除重複的 100 MHz `create_clock`，並對錄音資料到 MIG 的握手傳輸加上 `set_max_delay -datapath_only 10 ns`。最終 Methodology report 的 `TIMING-47` 指出此約束跨越兩個有關聯的時脈；該路徑的地址／資料由請求開始一直保持到交易完成，故依握手協定使用此約束。若調整 DDR2 介面或握手機制，需重新審核約束。
+1. **跨時脈資料路徑。** 錄音機的 100 MHz 時鐘由 clock wizard IP 定義；遊戲版的 `game_timing.xdc` 另外在 `CLK100MHZ` 腳位定義 `game_clk` 給直接使用板上時鐘的遊戲邏輯，因此 Methodology report 仍有一個 `TIMING-27`（IP 時鐘定義在內部階層腳位）。錄音部分已移除重複的 100 MHz `create_clock`，並對錄音資料到 MIG 的握手傳輸加上 `set_max_delay -datapath_only 10 ns`。最終 Methodology report 的 `TIMING-47` 指出此約束跨越兩個有關聯的時脈；該路徑的地址／資料由請求開始一直保持到交易完成，故依握手協定使用此約束。若調整 DDR2 介面或握手機制，需重新審核約束。
 2. **非同步重設網路需檢查。** `LUTAR-1` 指出 LUT 驅動非同步 reset，可能有毛刺風險；若板上偶發自行重置，優先檢查 `Top.sv` 的 `locked && !rst` 及相關重設路徑。
 3. **完整 DDR2 行為模擬尚未通過。** 記憶體模型初始化仍出現 `Load Mode Failure: All banks must be Precharged`；交易級模擬及 Vivado 實作已通過，但整合版需以實體板確認 DDR2 校準、錄音及讀回穩定性。
 4. 整合版需上板驗證：先以 `SW4=0` 錄一段，再以 `SW4=1` 錄一段，確認 LED16 紅燈、播放方向、倒數秒數，以及 LED9～LED15 的音量變化；錄音後切換 SW4 不應改變方向。
