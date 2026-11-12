@@ -111,6 +111,7 @@ module NEXYS_A7 #(
 
     logic BTNU_down,BTNR_down,BTND_down,locked,CLK200MHZ;
     logic audio_bit, recording, playing, paused, recorded, overflow;
+    logic reverse_select, reverse_mode;
     logic [3:0] speed_select;
     logic [4:0] display_seconds;
     
@@ -131,6 +132,10 @@ module NEXYS_A7 #(
         .clk(M_CLK), .rst_p(BTNC || !locked),
         .in_async(SW[3:0]), .out(speed_select)
     );
+    ff_sync direction_sync(
+        .clk(M_CLK), .rst_p(BTNC || !locked),
+        .in_async(SW[4]), .out(reverse_select)
+    );
     
     
     Top #(.MAX_WORDS(MAX_WORDS)) top0(
@@ -143,10 +148,12 @@ module NEXYS_A7 #(
     .play_pause_press(BTNR_down),
     .stop_press(BTND_down),
     .speed_select(speed_select),
+    .reverse_select(reverse_select),
     .recording(recording),
     .playing(playing),
     .paused(paused),
     .recorded(recorded),
+    .reverse_mode(reverse_mode),
     .overflow(overflow),
     .display_seconds(display_seconds),
 
@@ -168,8 +175,10 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // LED[8:5] mirrors the speed switches; LED[4:0] shows recorder status.
-    assign LED = {7'b0, speed_select, overflow, recorded, paused, playing, recording};
+    // LED9 shows the direction latched when recording began.
+    // LED[8:5] mirrors speed; LED[4:0] shows recorder status.
+    assign LED = {6'b0, reverse_mode, speed_select,
+                  overflow, recorded, paused, playing, recording};
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),

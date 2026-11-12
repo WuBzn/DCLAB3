@@ -10,11 +10,13 @@ module Top #(
     input  play_pause_press,
     input  stop_press,
     input  [3:0] speed_select,
+    input  reverse_select,
     output data_out,
     output recording,
     output playing,
     output paused,
     output recorded,
+    output logic reverse_mode,
     output logic overflow,
     output logic [4:0] display_seconds,
 
@@ -99,7 +101,8 @@ module Top #(
     // The 1x setting works the same for either direction.
     assign speed_factor = {1'b0, speed_select[2:0]} + 4'd1;
     assign speed_changed = speed_select != active_speed;
-    assign final_word = played_words == recorded_words - 1'b1;
+    assign final_word = reverse_mode ? played_words == 0 :
+                        played_words == recorded_words - 1'b1;
     assign group_size = speed_select[3] ? 4'd1 : speed_factor;
     assign bit_end = {1'b0, play_bit} + {4'b0, group_size};
     assign group_ready = play_bit < 7'd64 &&
@@ -117,16 +120,21 @@ module Top #(
             bit_index = play_bit + i;
             if (i < group_size && (bit_index < 64 || !final_word)) begin
                 if (bit_index < 64)
-                    ones_in_group = ones_in_group + play_word[63 - bit_index];
+                    ones_in_group = ones_in_group +
+                                    (reverse_mode ? play_word[bit_index] :
+                                                    play_word[63 - bit_index]);
                 else
-                    ones_in_group = ones_in_group + next_word[127 - bit_index];
+                    ones_in_group = ones_in_group +
+                                    (reverse_mode ? next_word[bit_index - 64] :
+                                                    next_word[127 - bit_index]);
             end
         end
     end
     assign density_sum = {1'b0, speed_changed ? 4'd0 : ones_accum} +
                          {1'b0, ones_in_group};
     assign output_bit = speed_select[3] || speed_factor == 4'd1 ?
-                        play_word[7'd63 - play_bit] :
+                        (reverse_mode ? play_word[play_bit] :
+                                        play_word[7'd63 - play_bit]) :
                         (density_sum >= {1'b0, speed_factor});
 
     wire capture_full = mode == RECORD && capture_bit == 6'd63;
@@ -156,6 +164,7 @@ module Top #(
             write_pending <= 0;
             stop_requested <= 0;
             recorded_words <= 0;
+            reverse_mode <= 0;
             write_addr <= 0;
             play_word <= 0;
             next_word <= 0;
@@ -207,7 +216,14 @@ module Top #(
                 READ_WAIT: if (mem_transaction_complete) begin
                     mem_state <= MEM_IDLE;
                     if (mode == PREFILL || mode == PLAY || mode == PAUSE) begin
-                        read_addr <= read_addr + 24'd2;
+                        // Each stored word occupies one 128-bit MIG address.
+                        // At address zero, hold the pointer instead of wrapping.
+                        if (reverse_mode) begin
+                            if (read_addr != 0)
+                                read_addr <= read_addr - 24'd2;
+                        end else begin
+                            read_addr <= read_addr + 24'd2;
+                        end
                         fetched_words <= fetched_words + 1'b1;
                         if (mode == PREFILL && !play_loaded) begin
                             play_word <= mem_d_from_ram;
@@ -238,6 +254,7 @@ module Top #(
                         write_pending <= 0;
                         stop_requested <= 0;
                         recorded_words <= 0;
+                        reverse_mode <= reverse_select;
                         write_addr <= 0;
                         overflow <= 0;
                         next_valid <= 0;
@@ -246,16 +263,24 @@ module Top #(
                     end else if (mode == READY && play_pause_press &&
                                  mem_state == MEM_IDLE && recorded_words != 0) begin
                         mode <= PREFILL;
-                        read_addr <= 0;
+                        read_addr <= reverse_mode ?
+                                     ({recorded_words, 1'b0} - 24'd2) : 24'd0;
                         fetched_words <= 0;
-                        played_words <= 0;
+                        played_words <= reverse_mode ?
+                                        recorded_words - 1'b1 : '0;
                         play_bit <= 0;
                         next_valid <= 0;
                         play_loaded <= 0;
                         repeat_count <= 0;
                         ones_accum <= 0;
-                        play_subsecond <= 0;
-                        play_seconds <= 0;
+                        // In reverse, show the source position counting down.
+                        play_subsecond <= reverse_mode ?
+                                          (record_subsecond == 0 ?
+                                           SECOND_BITS[21:0] : record_subsecond) :
+                                          22'd0;
+                        play_seconds <= reverse_mode ?
+                                        record_seconds + (record_subsecond != 0) :
+                                        5'd0;
                     end
                 end
                 RECORD: begin
@@ -302,7 +327,9 @@ module Top #(
                             if (next_valid) begin
                                 play_word <= next_word;
                                 next_valid <= 0;
-                                played_words <= played_words + 1'b1;
+                                played_words <= reverse_mode ?
+                                                played_words - 1'b1 :
+                                                played_words + 1'b1;
                                 play_bit <= 0;
                             end else
                                 overflow <= 1;
@@ -312,7 +339,18 @@ module Top #(
                                 repeat_count <= (speed_changed ? 4'd0 : repeat_count) + 1'b1;
                             end else begin
                                 repeat_count <= 0;
-                                if (play_bits_total >= SECOND_BITS) begin
+                                if (reverse_mode) begin
+                                    if ({1'b0, play_subsecond} <=
+                                        {15'b0, consumed_bits}) begin
+                                        play_subsecond <= SECOND_BITS -
+                                                          {15'b0, consumed_bits} +
+                                                          {1'b0, play_subsecond};
+                                        play_seconds <= play_seconds - 1'b1;
+                                    end else begin
+                                        play_subsecond <= play_subsecond -
+                                                          consumed_bits;
+                                    end
+                                end else if (play_bits_total >= SECOND_BITS) begin
                                     play_subsecond <= play_bits_total - SECOND_BITS;
                                     play_seconds <= play_seconds + 1'b1;
                                 end else begin
@@ -329,7 +367,9 @@ module Top #(
                                     if (next_valid) begin
                                         play_word <= next_word;
                                         next_valid <= 0;
-                                        played_words <= played_words + 1'b1;
+                                        played_words <= reverse_mode ?
+                                                        played_words - 1'b1 :
+                                                        played_words + 1'b1;
                                         play_bit <= bit_end - 8'd64;
                                     end else begin
                                         play_bit <= 7'd64;

@@ -4,11 +4,14 @@ module Top_speed_tb;
     logic clk = 0, rst = 1, locked = 1;
     logic data_in = 0, record_press = 0, play_pause_press = 0, stop_press = 0;
     logic [3:0] speed_select = 0;
-    wire data_out, recording, playing, paused, recorded, overflow;
+    logic reverse_select = 0;
+    wire data_out, recording, playing, paused, recorded, overflow, reverse_mode;
     wire [4:0] display_seconds;
     logic [63:0] words [0:3];
     logic expected [0:2047];
     integer expected_len, sampled, case_number;
+    integer source_length = 256;
+    bit case_reverse;
     bit checking = 0;
 
     always #5 clk = ~clk;
@@ -18,7 +21,8 @@ module Top_speed_tb;
         .clk(clk), .clk_mem(clk), .locked(locked), .rst(rst),
         .data_in(data_in), .record_press(record_press),
         .play_pause_press(play_pause_press), .stop_press(stop_press),
-        .speed_select(speed_select), .data_out(data_out),
+        .speed_select(speed_select), .reverse_select(reverse_select),
+        .data_out(data_out), .reverse_mode(reverse_mode),
         .recording(recording), .playing(playing), .paused(paused),
         .recorded(recorded), .overflow(overflow),
         .display_seconds(display_seconds)
@@ -35,8 +39,9 @@ module Top_speed_tb;
     always @(negedge clk)
         if (checking && playing && dut.group_ready) begin
             if (sampled >= expected_len || data_out !== expected[sampled])
-                $fatal(1, "speed=%0d output[%0d]=%b expected=%b",
-                       case_number, sampled, data_out, expected[sampled]);
+                $fatal(1, "reverse=%0d speed=%0d output[%0d]=%b expected=%b",
+                       case_reverse, case_number, sampled, data_out,
+                       expected[sampled]);
             sampled = sampled + 1;
         end
 
@@ -54,23 +59,40 @@ module Top_speed_tb;
         end
     endtask
 
-    task automatic make_expected(input integer code);
-        integer factor, accum, ones, i, j, k;
+    task automatic pulse_stop;
+        begin
+            @(negedge clk) stop_press = 1;
+            @(negedge clk) stop_press = 0;
+        end
+    endtask
+
+    function automatic bit source_bit(input integer index,
+                                      input bit reverse_direction);
+        integer position;
+        begin
+            position = reverse_direction ? source_length - 1 - index : index;
+            source_bit = words[position / 64][63 - (position % 64)];
+        end
+    endfunction
+
+    task automatic make_expected(input integer code,
+                                 input bit reverse_direction);
+        integer factor, accum, ones, i, j;
         begin
             factor = (code % 8) + 1;
             expected_len = 0;
             accum = 0;
             if (code >= 8) begin
-                for (i = 0; i < 256; i = i + 1)
+                for (i = 0; i < source_length; i = i + 1)
                     for (j = 0; j < factor; j = j + 1) begin
-                        expected[expected_len] = words[i / 64][63 - (i % 64)];
+                        expected[expected_len] = source_bit(i, reverse_direction);
                         expected_len = expected_len + 1;
                     end
             end else begin
-                for (i = 0; i < 256; i = i + factor) begin
+                for (i = 0; i < source_length; i = i + factor) begin
                     ones = 0;
-                    for (j = 0; j < factor && i + j < 256; j = j + 1)
-                        ones = ones + words[(i+j) / 64][63 - ((i+j) % 64)];
+                    for (j = 0; j < factor && i + j < source_length; j = j + 1)
+                        ones = ones + source_bit(i+j, reverse_direction);
                     accum = accum + ones;
                     expected[expected_len] = (accum >= factor);
                     if (accum >= factor) accum = accum - factor;
@@ -80,22 +102,37 @@ module Top_speed_tb;
         end
     endtask
 
-    task automatic run_case(input integer code);
+    task automatic run_case(input integer code, input bit reverse_direction);
         begin
             speed_select = code;
             case_number = code;
+            case_reverse = reverse_direction;
             sampled = 0;
-            make_expected(code);
+            make_expected(code, reverse_direction);
             checking = 1;
             pulse_play();
             wait (playing);
+            if (reverse_mode !== reverse_direction)
+                $fatal(1, "Playback direction changed after recording");
+            if (code == 0) begin
+                reverse_select = reverse_direction;
+                repeat (9) @(negedge clk);
+                reverse_select = !reverse_direction;
+                if (reverse_direction && source_length == 256) begin
+                    wait (sampled >= 65);
+                    if (display_seconds != 3)
+                        $fatal(1, "Reverse source seconds did not count down");
+                end
+            end
             wait (!playing);
             checking = 0;
+            #1; // Let the READY display mux settle after the final bit.
             if (sampled != expected_len || overflow || !recorded ||
-                dut.play_seconds != 4 || display_seconds != 4)
-                $fatal(1, "speed=%0d samples=%0d expected=%0d play_s=%0d display_s=%0d overflow=%b",
-                       code, sampled, expected_len, dut.play_seconds,
-                       display_seconds, overflow);
+                dut.play_seconds != (reverse_direction ? 0 : source_length / 64) ||
+                display_seconds != source_length / 64)
+                $fatal(1, "reverse=%0d speed=%0d samples=%0d expected=%0d play_s=%0d record_s=%0d display_s=%0d mode=%0d overflow=%b",
+                       reverse_direction, code, sampled, expected_len, dut.play_seconds,
+                       dut.record_seconds, display_seconds, dut.mode, overflow);
             repeat (3) @(negedge clk);
         end
     endtask
@@ -113,13 +150,14 @@ module Top_speed_tb;
         if (mic_bit != 256 || dut.recorded_words != 4 ||
             display_seconds != 4 || overflow)
             $fatal(1, "Recording setup failed");
+        reverse_select = 1; // SW4 changes after recording; playback stays forward.
         for (mode_code = 0; mode_code < 16; mode_code = mode_code + 1)
-            run_case(mode_code);
+            run_case(mode_code, 0);
 
         speed_select = 11; // 1/4x: pause in the middle of a repeated sample.
         case_number = 11;
         sampled = 0;
-        make_expected(11);
+        make_expected(11, 0);
         checking = 1;
         pulse_play();
         wait (sampled >= 301);
@@ -151,13 +189,78 @@ module Top_speed_tb;
         if (overflow || !recorded)
             $fatal(1, "Live speed change did not finish cleanly");
 
-        $display("PASS: all speeds, pause/resume, and live speed changes");
+        // A new recording replaces both the data and its latched direction.
+        mic_bit = 0;
+        reverse_select = 1;
+        pulse_record();
+        wait (recorded && !recording);
+        if (mic_bit != 256 || dut.recorded_words != 4 || !reverse_mode || overflow)
+            $fatal(1, "Reverse recording setup failed");
+        reverse_select = 0; // SW4 must no longer affect this recording.
+        for (mode_code = 0; mode_code < 16; mode_code = mode_code + 1)
+            run_case(mode_code, 1);
+
+        speed_select = 11; // Pause during a repeated bit in reverse.
+        case_number = 11;
+        case_reverse = 1;
+        sampled = 0;
+        make_expected(11, 1);
+        checking = 1;
+        pulse_play();
+        wait (sampled >= 301);
+        pulse_play();
+        if (!paused || display_seconds != 3)
+            $fatal(1, "Reverse pause entered at wrong position");
+        held_bit = dut.play_bit;
+        held_repeat = dut.repeat_count;
+        reverse_select = 1;
+        repeat (12) @(negedge clk);
+        if (dut.play_bit != held_bit || dut.repeat_count != held_repeat ||
+            display_seconds != 3 || !reverse_mode)
+            $fatal(1, "Reverse playback advanced or direction changed while paused");
+        pulse_play();
+        wait (!playing);
+        checking = 0;
+        if (sampled != expected_len || overflow || dut.play_seconds != 0)
+            $fatal(1, "Reverse pause/resume failed");
+
+        speed_select = 0;
+        pulse_play();
+        wait (playing);
+        repeat (12) @(negedge clk);
+        speed_select = 7;  // Change to 8x during reverse playback.
+        repeat (5) @(negedge clk);
+        speed_select = 15; // Then change to 1/8x.
+        wait (!playing);
+        if (overflow || !recorded || !reverse_mode || dut.play_seconds != 0)
+            $fatal(1, "Reverse live speed change did not finish cleanly");
+
+        // Stop a new recording after just one word. Reverse prefill must not
+        // request an address before zero or wait for a second word.
+        mic_bit = 0;
+        reverse_select = 1;
+        pulse_record();
+        wait (mic_bit >= 16);
+        pulse_stop();
+        wait (recorded && !recording);
+        if (mic_bit < 64 || mic_bit >= 128 || dut.recorded_words != 1 ||
+            !reverse_mode || overflow)
+            $fatal(1, "Single-word reverse recording setup failed: bits=%0d words=%0d reverse=%b overflow=%b",
+                   mic_bit, dut.recorded_words, reverse_mode, overflow);
+        source_length = 64;
+        reverse_select = 0;
+        run_case(0, 1);
+        run_case(5, 1);  // Partial final fast group.
+        run_case(15, 1);
+
+        $display("PASS: forward/reverse speeds, direction latch, pause/resume, countdown, one-word edge");
         $finish;
     end
 
     initial begin
-        #200000;
-        $fatal(1, "Timeout at speed=%0d samples=%0d", case_number, sampled);
+        #500000;
+        $fatal(1, "Timeout at reverse=%0d speed=%0d samples=%0d",
+               case_reverse, case_number, sampled);
     end
 endmodule
 
