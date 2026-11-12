@@ -113,6 +113,8 @@ module NEXYS_A7 #(
     logic audio_bit, recording, playing, paused, recorded, overflow;
     logic [3:0] speed_select;
     logic [4:0] display_seconds;
+    logic [6:0] volume_bar;
+    logic signed [31:0] volume_env_q;
     
     clk_wiz_0 clk_wiz(
     .reset(BTNC),
@@ -168,8 +170,26 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // LED[8:5] mirrors the speed switches; LED[4:0] shows recorder status.
-    assign LED = {7'b0, speed_select, overflow, recorded, paused, playing, recording};
+    // Show microphone level while recording and output level while playing.
+    Pdm_Volume_Meter volume_meter0 (
+        .clk(M_CLK),
+        .rst(BTNC || !locked),
+        .enable(recording || playing),
+        .pdm_bit(recording ? M_DATA : audio_bit),
+        .bar(volume_bar),
+        .env_level_q(volume_env_q)
+    );
+
+    // The Basic Vivado license supports an RTL-instantiated ILA. Capture the
+    // meter's Q16 envelope on the same 3.125 MHz clock as the PDM sampler.
+    ila_0 ila_volume0 (
+        .clk(M_CLK),
+        .probe0(volume_env_q)
+    );
+
+    // LED[15:9] is the volume bar; LED[8:5] mirrors the speed switches.
+    // LED[4:0] shows recorder status.
+    assign LED = {volume_bar, speed_select, overflow, recorded, paused, playing, recording};
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),
