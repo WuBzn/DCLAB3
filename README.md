@@ -2,6 +2,53 @@
 
 Nexys A7 數位錄音機。使用板載 PDM 麥克風錄音，將資料存入 DDR2，並由音訊輸出播放。`integrated` 分支結合正常／倒轉播放、暫停、停止、2～8 倍快放、1/2～1/8 倍慢放、七段顯示器與七格音量條。
 
+## 聲控管道遊戲（`game` 分支）
+
+將 Nexys A7 的 VGA 接到支援 640×480 VGA 的外接螢幕。遊戲使用板載麥克風的即時音量；安靜時管子不動，發聲越大，每 50 ms 移動越多（1～7 像素）。只有目前選取的管段會動。管段接近正確高度時會吸附並變成綠色；全部接通後球自動滾進右側洞口。三關分別有 **4 段／40 秒、6 段／50 秒、8 段／60 秒**。每段可形成彎頭或 S 形，三關的球起點／洞口高度分別是 264／212、208／260、290／238 像素。遊戲音量條門檻降為原錄音音量條的一半，錄音功能原本的門檻不變。
+
+![RTL 模擬產生的遊戲畫面](docs/game_preview.png)
+
+畫面預覽：[DCLAB GROUP11 首頁](docs/game_page0.png) · [操作說明](docs/game_page1.png) · [關卡預覽](docs/game_page2.png)。
+
+切換流程：**SW15 撥下**顯示 DCLAB GROUP11 首頁；**SW15 撥上**顯示操作說明；**第一次按 BTNU** 進入關卡預覽（時間不減）；**第二次按 BTNU** 才開始倒數與移動。過關按 BTNU 進下一關預覽，再按一次開始該關。
+
+| 操作 | 遊戲功能 |
+| --- | --- |
+| `SW15` | 撥下顯示 DCLAB GROUP11 首頁並使用原錄音機功能；撥上進入遊戲說明 |
+| `SW14`～`SW7` | 由左至右第 1～8 段的方向；撥上（1）往上、撥下（0）往下。每段上方標有 SW 號碼與 `UP`／`DN`；只需設定本關出現的 4／6／8 段 |
+| `BTNL`／`BTNR` | 選取左邊／右邊的管段；只會在本關可移動的管段之間切換 |
+| `BTNU` | 說明頁進入預覽、預覽頁開始計時；過關後進下一關預覽、逾時後重新預覽；全破後回說明頁 |
+| `BTND` | 返回第一關說明頁 |
+| `BTNC` | 重設整個 FPGA 系統 |
+
+七段顯示器格式為 `L1  40P1`：關卡 1、剩餘 40 秒、目前選取第 1 段。VGA 左上 `LEVEL` 三格表示關卡，中間 `TIME` 長條及兩位數表示剩餘秒數，右上 `PIPE` 八格表示各段狀態：青色是選取、橘色待調整、綠色已對齊、暗色尚未用到。下方 `VOICE` 長條表示即時音量。管段和上方標牌比前版縮小，每段標示 `SW14`～`SW07` 與 `UP`／`DN`。板上 `LED0`～`LED7` 表示已接通的管段，`LED8` 表示遊戲模式，`LED9`～`LED15` 顯示遊戲音量。
+
+第一次玩第一關：將 `SW15` 撥上，閱讀說明並按兩次 `BTNU`；保持選取 `P1`，將 `SW14` 撥下，對麥克風發聲直到第一段變綠；按 `BTNR` 選取 `P2`，依灰色虛線目標位置決定將 `SW13` 撥上或撥下，再發聲對齊。對其餘兩段重複操作。全部接通後球自動滾進洞。畫面中的灰色虛線標出各段應對齊的路徑。
+
+遊戲模式會停止正在錄製或播放的音訊；切回 `SW15=0` 後，原錄音機的按鍵和 `SW[4:0]` 設定恢復。遊戲與錄音機共用音量計，遊戲中量測的是即時麥克風。球會沿已接通的固定路徑滾動。VGA 使用 100 MHz 時鐘上的 25 MHz 像素 enable。
+
+從現有 Vivado 專案建置遊戲 bitstream：
+
+```powershell
+C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_game.tcl -log C:\DCLAB3_vivado\DCLAB3\game_build.log -journal C:\DCLAB3_vivado\DCLAB3\game_build.jou
+```
+
+輸出為 `C:\DCLAB3_vivado\DCLAB3\NEXYS_A7_game.bit`。使用 Vivado Hardware Manager 的 **Program Device** 選擇此 `.bit` 檔燒錄。遊戲畫面與按鍵已經過模擬；VGA 顯示相容性和實際麥克風手感仍需用實體板與螢幕確認。
+
+遊戲控制模擬可執行：
+
+```powershell
+iverilog -g2012 -s Game_Controller_tb -o "$env:TEMP\Game_Controller_tb.vvp" Game_Level_Config.sv Game_Controller.sv sim/Game_Controller_tb.sv
+vvp "$env:TEMP\Game_Controller_tb.vvp"
+```
+
+VGA 同步時序與遊戲七段顯示器可執行：
+
+```powershell
+iverilog -g2012 -s Game_Display_tb -o "$env:TEMP\Game_Display_tb.vvp" Game_Level_Config.sv Game_VGA.sv Game_SevenSegment.sv sim/Game_Display_tb.sv
+vvp "$env:TEMP\Game_Display_tb.vvp"
+```
+
 ## 目前進度（2026-11-13）
 
 - 錄音、DDR2 儲存與正常播放已完成。音訊時鐘為 3.125 MHz，錄音上限為 16 秒（`MAX_WORDS = 781_250` 個 64-bit 字）。
@@ -67,6 +114,11 @@ C:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat -mode batch -source build_integra
 | --- | --- |
 | `NEXYS_A7.sv` | 板上頂層：時鐘、按鍵、開關同步、LED、麥克風、音訊與 DDR2 接線 |
 | `Pdm_Volume_Meter.sv` | 將 PDM 資料轉為七格相對音量條 |
+| `Game_Level_Config.sv` | 三關共用的球起點／洞口、管道彎曲形狀與目標位置 |
+| `Game_Controller.sv` | 選段、聲控位移、三關倒數、管道對齊及球滾動狀態機 |
+| `Game_VGA.sv` | 640×480 遊戲畫面、VGA 同步與 25 MHz 像素 enable |
+| `Game_SevenSegment.sv` | 遊戲關卡、剩餘時間與選取管段的七段顯示 |
+| `build_game.tcl` | 將遊戲模組加入 Vivado 專案並產生遊戲 bitstream |
 | `cdc_timing.xdc` | 限制已握手的音訊時脈至 DDR2 使用者時脈資料路徑延遲 |
 | `build_integrated.tcl` | 備份舊 bitstream、建置整合版並檢查最終時序 |
 | `Top.sv` | 錄音／播放狀態機、方向鎖定、64-bit 資料緩衝、DDR2 請求、變速與原錄音秒數計算 |

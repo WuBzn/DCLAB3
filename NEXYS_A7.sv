@@ -116,6 +116,24 @@ module NEXYS_A7 #(
     logic [4:0] display_seconds;
     logic [6:0] volume_bar;
     logic signed [31:0] volume_env_q;
+    logic game_mode_audio, game_mode_video;
+    logic [7:0] game_direction;
+    logic [6:0] game_volume_bar, game_volume_bar_audio;
+    logic game_start, game_left, game_right, game_reset_press;
+    logic [2:0] game_state;
+    logic [1:0] game_level;
+    logic [2:0] game_selected;
+    logic [5:0] game_seconds, game_time_limit;
+    logic [7:0] game_locked;
+    logic [79:0] game_positions;
+    logic [79:0] game_targets, game_initial_positions;
+    logic [15:0] game_mid_codes, game_end_codes;
+    logic [9:0] game_source_y, game_goal_y;
+    logic [7:0] game_initial_locked;
+    logic [9:0] game_ball_x;
+    logic rec_CA,rec_CB,rec_CC,rec_CD,rec_CE,rec_CF,rec_CG,rec_DP;
+    logic game_CA,game_CB,game_CC,game_CD,game_CE,game_CF,game_CG,game_DP;
+    logic [7:0] rec_AN,game_AN;
     
     clk_wiz_0 clk_wiz(
     .reset(BTNC),
@@ -138,6 +156,20 @@ module NEXYS_A7 #(
         .clk(M_CLK), .rst_p(BTNC || !locked),
         .in_async(SW[4]), .out(reverse_select)
     );
+    ff_sync game_mode_audio_sync(
+        .clk(M_CLK), .rst_p(BTNC || !locked),
+        .in_async(SW[15]), .out(game_mode_audio)
+    );
+    ff_sync game_mode_video_sync(
+        .clk(CLK100MHZ), .rst_p(BTNC || !locked),
+        .in_async(SW[15]), .out(game_mode_video)
+    );
+    ff_sync #(.WIDTH(8)) game_direction_sync(
+        .clk(CLK100MHZ), .rst_p(BTNC || !locked),
+        .in_async({SW[7], SW[8], SW[9], SW[10],
+                   SW[11], SW[12], SW[13], SW[14]}),
+        .out(game_direction)
+    );
     
     
     Top #(.MAX_WORDS(MAX_WORDS)) top0(
@@ -146,9 +178,9 @@ module NEXYS_A7 #(
     .rst(BTNC),
     .data_in(M_DATA),
     .data_out(audio_bit),
-    .record_press(BTNU_down),
-    .play_pause_press(BTNR_down),
-    .stop_press(BTND_down),
+    .record_press(BTNU_down && !game_mode_audio),
+    .play_pause_press(BTNR_down && !game_mode_audio),
+    .stop_press(BTND_down || game_mode_audio),
     .speed_select(speed_select),
     .reverse_select(reverse_select),
     .recording(recording),
@@ -177,14 +209,76 @@ module NEXYS_A7 #(
     .clk_mem(CLK200MHZ)
     );
 
-    // Show microphone level while recording and output level while playing.
+    // The game always measures the live microphone. Recorder mode preserves
+    // its original input/output meter behavior.
     Pdm_Volume_Meter volume_meter0 (
         .clk(M_CLK),
         .rst(BTNC || !locked),
-        .enable(recording || playing),
-        .pdm_bit(recording ? M_DATA : audio_bit),
+        .enable(game_mode_audio || recording || playing),
+        .pdm_bit(game_mode_audio || recording ? M_DATA : audio_bit),
         .bar(volume_bar),
         .env_level_q(volume_env_q)
+    );
+    // Speech-friendly game thresholds: half the recorder meter thresholds.
+    assign game_volume_bar_audio = {
+        volume_env_q >= 32'sd131072,
+        volume_env_q >= 32'sd98304,
+        volume_env_q >= 32'sd65536,
+        volume_env_q >= 32'sd49152,
+        volume_env_q >= 32'sd32768,
+        volume_env_q >= 32'sd24576,
+        volume_env_q >= 32'sd16384
+    };
+    ff_sync #(.WIDTH(7)) game_volume_sync(
+        .clk(CLK100MHZ), .rst_p(BTNC || !locked),
+        .in_async(game_volume_bar_audio), .out(game_volume_bar)
+    );
+
+    // Game buttons are debounced in the 100 MHz video/game domain.
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES * 32)) game_start_button(
+        .i_in(BTNU), .i_clk(CLK100MHZ), .i_rst(BTNC), .o_pos(game_start)
+    );
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES * 32)) game_left_button(
+        .i_in(BTNL), .i_clk(CLK100MHZ), .i_rst(BTNC), .o_pos(game_left)
+    );
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES * 32)) game_right_button(
+        .i_in(BTNR), .i_clk(CLK100MHZ), .i_rst(BTNC), .o_pos(game_right)
+    );
+    Debounce #(.CNT_N(DEBOUNCE_CYCLES * 32)) game_reset_button(
+        .i_in(BTND), .i_clk(CLK100MHZ), .i_rst(BTNC), .o_pos(game_reset_press)
+    );
+    Game_Level_Config game_config0 (
+        .level(game_level), .time_limit(game_time_limit),
+        .source_y(game_source_y), .goal_y(game_goal_y),
+        .target_positions(game_targets),
+        .initial_positions(game_initial_positions),
+        .initial_locked(game_initial_locked),
+        .mid_codes(game_mid_codes), .end_codes(game_end_codes)
+    );
+    Game_Controller game0 (
+        .clk(CLK100MHZ), .rst(BTNC || !locked), .enable(game_mode_video),
+        .start_press(game_start), .left_press(game_left),
+        .right_press(game_right), .reset_press(game_reset_press),
+        .pipe_direction(game_direction), .volume_bar(game_volume_bar),
+        .time_limit(game_time_limit),
+        .target_positions(game_targets),
+        .initial_positions(game_initial_positions),
+        .initial_locked(game_initial_locked),
+        .state(game_state), .level(game_level), .selected(game_selected),
+        .seconds_left(game_seconds), .pipe_locked(game_locked),
+        .pipe_positions(game_positions), .ball_x(game_ball_x)
+    );
+    Game_VGA game_vga0 (
+        .clk(CLK100MHZ), .rst(BTNC || !locked), .enable(game_mode_video),
+        .state(game_state), .level(game_level), .selected(game_selected),
+        .seconds_left(game_seconds), .pipe_locked(game_locked),
+        .pipe_positions(game_positions), .ball_x(game_ball_x),
+        .volume_bar(game_volume_bar), .pipe_direction(game_direction),
+        .source_y(game_source_y), .goal_y(game_goal_y),
+        .target_positions(game_targets),
+        .mid_codes(game_mid_codes), .end_codes(game_end_codes),
+        .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B),
+        .VGA_HS(VGA_HS), .VGA_VS(VGA_VS)
     );
 
     ila_0 ila_volume0 (
@@ -192,13 +286,15 @@ module NEXYS_A7 #(
         .probe0(volume_env_q)
     );
 
-    // LED9-15 shows the volume bar; LED16 red shows the latched direction.
-    // LED5-8 mirrors speed; LED0-4 shows recorder status.
-    assign LED = {volume_bar, speed_select,
+    // Game: LED9-15 volume, LED8 mode, LED0-7 locked pipes.
+    // Recorder: original speed and status indicators.
+    assign LED = game_mode_video ?
+                 {game_volume_bar, 1'b1, game_locked} :
+                 {volume_bar, speed_select,
                   overflow, recorded, paused, playing, recording};
-    assign LED16_R = reverse_mode;
-    assign LED16_G = 1'b0;
-    assign LED16_B = 1'b0;
+    assign LED16_R = game_mode_video ? (game_state == 3'd6) : reverse_mode;
+    assign LED16_G = game_mode_video && (game_state == 3'd5 || game_state == 3'd7);
+    assign LED16_B = game_mode_video && game_state == 3'd4;
 
     Seven_Segment_Display seven0(
         .i_clk(M_CLK),
@@ -210,16 +306,27 @@ module NEXYS_A7 #(
         .i_overflow(overflow),
         .i_seconds(display_seconds),
         .i_speed(speed_select),
-        .CA(CA),
-        .CB(CB),
-        .CC(CC),
-        .CD(CD),
-        .CE(CE),
-        .CF(CF),
-        .CG(CG),
-        .DP(DP),
-        .o_an(AN)
+        .CA(rec_CA),
+        .CB(rec_CB),
+        .CC(rec_CC),
+        .CD(rec_CD),
+        .CE(rec_CE),
+        .CF(rec_CF),
+        .CG(rec_CG),
+        .DP(rec_DP),
+        .o_an(rec_AN)
     );
+    Game_SevenSegment game_seven0 (
+        .clk(CLK100MHZ), .rst(BTNC || !locked),
+        .level(game_level), .seconds_left(game_seconds),
+        .selected(game_selected),
+        .CA(game_CA), .CB(game_CB), .CC(game_CC), .CD(game_CD),
+        .CE(game_CE), .CF(game_CF), .CG(game_CG), .DP(game_DP),
+        .AN(game_AN)
+    );
+    assign {CA,CB,CC,CD,CE,CF,CG,DP,AN} = game_mode_video ?
+           {game_CA,game_CB,game_CC,game_CD,game_CE,game_CF,game_CG,game_DP,game_AN} :
+           {rec_CA,rec_CB,rec_CC,rec_CD,rec_CE,rec_CF,rec_CG,rec_DP,rec_AN};
     Debounce #(.CNT_N(DEBOUNCE_CYCLES)) deb0(
         .i_in(BTNU),
         .i_clk(M_CLK),
